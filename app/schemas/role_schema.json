@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Role Post schema",
+  "type": "object",
+  "properties": {
+        "level": {"type": "integer"},
+        "name": {"type": "string", "minLength": 3, "maxLength": 50},
+        "description": {"type": "string", "minLength": 5, "maxLength": 100}
+  },
+  "additionalProperties": false,
+  "required": ["level", "name", "description"]
+}

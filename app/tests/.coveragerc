@@ -1,0 +1,13 @@
+# -----------------------------------------------------------------------------
+# configuration file for pytest coverage
+# -----------------------------------------------------------------------------
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+
+[run]
+omit =
+    app/tests/load_live_db.py
+    app/services.py

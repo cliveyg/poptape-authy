@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "User Login schema",
+  "type": "object",
+  "properties": {
+        "username": {"type": "string", "minLength": 3, "maxLength": 20},
+        "password": {"type": "string", "minLength": 8, "maxLength": 50}
+  },
+  "additionalProperties": false,
+  "required": ["username", "password"]
+}
