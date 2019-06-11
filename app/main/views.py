@@ -42,7 +42,13 @@ def token_required(f):
     def decorated(*args, **kwargs):
         token = None
 
-        if app.config['ENVIRONMENT'] == 'PRODUCTION' and not request.is_secure:
+        secure = False
+        if 'X-Forwarded-Proto' in request.headers:
+            scheme = request.headers['X-Forwarded-Proto']
+            if scheme == 'HTTPS' or scheme == 'https':
+                secure = True
+
+        if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
             return jsonify({ 'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
 
         if 'x-access-token' in request.headers:
@@ -145,17 +151,21 @@ def login_user():
     except:
         return jsonify({ 'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
 
-    #TODO: Change is_secure to X-FORWARDED-PROTO as we use nginx as proxy
-    if app.config['ENVIRONMENT'] == 'PRODUCTION' and not request.is_secure:
+    secure = False
+    app.logger.info(request.headers)
+    if 'X-Forwarded-Proto' in request.headers:
+        scheme = request.headers['X-Forwarded-Proto']
+        if scheme == 'HTTPS' or scheme == 'https':
+            secure = True
+
+    if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
         return jsonify({ 'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
     
-    #TODO: Changing from HTTP Basic Auth to form based due to utf8 constraints in Basic Auth
-    # validate input against json schemas
     try:
         assert_valid_schema(login_data, 'login')
     except JsonValidationError as error:
         app.logger.debug("The error is [%s]", str(error))
-        return jsonify({ 'message': 'Check ya inputs mate.'}), 400
+        return jsonify({ 'message': 'Check ya inputs mate'}), 400
 
     #TODO: refactor this - could do a lot of checks in the model query
     try:

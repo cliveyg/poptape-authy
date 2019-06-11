@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 
 # add bash etc as alpine version doesn't have these
-RUN apk add --no-cache bash git gawk sed grep bc coreutils 
+#RUN apk add --no-cache bash git gawk sed grep bc coreutils 
 
 # these modules enable us to build bcrypt
 RUN apk --no-cache add --virtual build-dependencies gcc g++ make libffi-dev openssl-dev
@@ -11,9 +11,20 @@ RUN  apk update \
   && apk add openssl \
   && rm -rf /var/cache/apk/*
 
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+# add bash etc as alpine version doesn't have these
+RUN apk add linux-headers
+RUN apk add --no-cache bash gawk sed grep bc coreutils
+RUN apk --no-cache add libpq
+
 # this needs to match the directory/package name of the python app
+# TODO: Copy only specific needed files and folders across
 COPY . /authy
 WORKDIR /authy
+
+RUN rm -r vauthy
+RUN rm -r migrations
+RUN rm -r app/tests
 RUN mkdir -p /authy/log
 
 # Install any needed packages specified in requirements.txt

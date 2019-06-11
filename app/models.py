@@ -39,15 +39,4 @@ class UserRole(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
     role_id = db.Column(db.Integer, db.ForeignKey(Role.id), primary_key=True)
 
-#class AwsDetails(db.Model):
-#    user_id = db.Column(db.Integer, db.ForeignKey(User.id), primary_key=True)
-#    aws_CreateUserRequestId = db.Column(db.String(200))
-#    aws_UserId = db.Column(db.String(200), unique=True)
-#    aws_UserName = db.Column(db.String(200), unique=True)
-#    aws_AccessKeyId = db.Column(db.String(200), unique=True)
-#    aws_SecretAccessKey = db.Column(db.String(200), unique=True)
-#    aws_PolicyName = db.Column(db.String(100))
-#    aws_Policy_data = db.Column(db.String(1000))
-#    aws_Arn = db.Column(db.String(200), unique=True)
-#    aws_CreateDate = db.Column(db.TIMESTAMP(), nullable=False)
     

@@ -8,6 +8,7 @@
 /app/tests/__pycache__/
 /app/main/__pycache__/
 .coverage
+app/tests/load_live_db.py
 # Un-ignore these files - it's bit of a clonky way to do it but it's more secure
 !app/
 !Dockerfile
@@ -36,3 +37,4 @@
 !app/schemas/login.json
 !app/schemas/role_schema.json
 !app/schemas/user_schema.json
+!manage.py
