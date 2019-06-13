@@ -14,6 +14,7 @@ class Config(object):
     BASE_URLS = os.getenv('BASE_URLS')
     ENVIRONMENT = os.getenv('ENVIRONMENT')
     USERS_LIMIT_PER_PAGE = os.getenv('USERS_LIMIT_PER_PAGE')
+    AWS_URL = os.getenv('AWS_URL')
 
 class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_TESTDB_URI')

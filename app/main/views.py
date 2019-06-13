@@ -3,6 +3,7 @@ from app import db, limiter
 from app.models import User, Role, UserRole 
 from app.assertions import assert_valid_schema
 from app.main import bp
+from app.services import call_aws
 from flask import current_app as app
 
 from flask import jsonify, request, make_response, abort, url_for
@@ -144,6 +145,7 @@ def check_jwt_against_user_id(current_user, user_id):
 @limiter.limit("10/hour")
 def login_user():
 
+    app.logger.info("WOOOOOOOOOO!")
     # check input is valid json
     app.logger.debug(request.get_json())
     try:
@@ -373,11 +375,17 @@ def create_user():
         db.session.rollback() # pragma: no cover
         return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500 # pragma: no cover
 
-    return jsonify({ 'message': 'Success! User ['+data['username']+'] created.'}), 201
-    #if create_aws_user(new_user.public_id,new_user.id):
-    #    return jsonify({ 'message': 'Success! User ['+data['username']+'] created.'}), 201
-    #db.session.rollback() 
-    #return jsonify({ 'message': 'Oopsy, something went a bit wrong.'}), 500
+    # create a jwt for new user to return to client
+    token = jwt.encode({ 'public_id': new_user.public_id,
+                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) },
+                         app.config['SECRET_KEY'],
+                         algorithm='HS512')
+
+    if call_aws(token, new_user.public_id):
+        return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
+                         'token': token.decode('UTF-8') }), 201
+    db.session.rollback() 
+    return jsonify({ 'message': 'Oopsy, something went a bit wrong.'}), 500
 
 
 #------------------------------------------------------------------------------#

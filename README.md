@@ -10,7 +10,7 @@ This is a heavily refactored version of my earlier login microservice. It has be
 /authy [GET] (Unauthenticated)
 
 Returns a list of endpoints and accepted methods for each..
-Possible return codes: [200]
+Valid return codes: [200]
 
 Example Output:
 {
@@ -26,8 +26,10 @@ Example Output:
 
 /authy/login [POST] (Unauthenticated)
 
-Returns a JWT token if authentication is successful. I am using for based auth as HTTP Basic has problems with utf8 characters in password and name fields.
-Possible return codes: [200, 400, 401, 429, 500]
+Returns a JWT token if authentication is successful. I am using for based auth 
+as HTTP Basic Authorization has problems with utf8 characters in password and 
+name fields.
+Valid return codes: [200, 400, 401, 429, 500]
 
 Example Input:
 {
@@ -47,7 +49,7 @@ Example Output:
 #### Notes:
 
 #### Tests:
-Tests can be run from app root using: `pytest --cov-config=app/tests/.coveragerc --cov=app app/tests`
+Tests can be run from app root (/path/to/authy) using: `pytest --cov-config=app/tests/.coveragerc --cov=app app/tests`
 Current test coverage is around 96%
 
 #### Docker:
@@ -55,6 +57,7 @@ This app can now be run in Docker using the included docker-compose.yml and Dock
 
 #### TODO:
 * Complete this documentation!
+* Add call to AWS microservice to create AWS user details.
 * Make test coverage more comprehensive.
 * Add auditing with calls to Rabbit MQ
 * Make code pep8 compliant even though imo pep8 code is uglier and harder to read ;-)
