@@ -154,7 +154,7 @@ def login_user():
         return jsonify({ 'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
 
     secure = False
-    app.logger.info(request.headers)
+    #app.logger.info(request.headers)
     if 'X-Forwarded-Proto' in request.headers:
         scheme = request.headers['X-Forwarded-Proto']
         if scheme == 'HTTPS' or scheme == 'https':
@@ -355,7 +355,7 @@ def create_user():
         db.session.commit()
     except (SQLAlchemyError, DBAPIError, UniqueViolation) as e:
         db.session.rollback()
-        app.logger.debug(str(e))
+        app.logger.error(str(e))
         if "duplicate" in str(e):
             error_message = 'Your username and/or email is already registered with us'
             return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
@@ -372,8 +372,10 @@ def create_user():
         db.session.add(user_role)
         db.session.commit()
     except (SQLAlchemyError, DBAPIError) as e: # pragma: no cover
+        app.logger.error(str(e))
         db.session.rollback() # pragma: no cover
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500 # pragma: no cover
+
+        return jsonify({ 'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
 
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
@@ -385,7 +387,7 @@ def create_user():
         return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
                          'token': token.decode('UTF-8') }), 201
     db.session.rollback() 
-    return jsonify({ 'message': 'Oopsy, something went a bit wrong.'}), 500
+    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 500
 
 
 #------------------------------------------------------------------------------#

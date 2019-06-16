@@ -47,6 +47,11 @@ Example Output:
 ```
 
 #### Notes:
+* Creating a user currently fails the AWS part as the AWS microservice isn't 
+finished and dockerized. When the dev version of poptape-aws is running a user
+is created without errors. As is, the user is created in the auth DB but the 
+authy microservice still returns a 500 - as it's coded to do. Maybe change the 
+return code to something else rather than 500?
 
 #### Tests:
 Tests can be run from app root (/path/to/authy) using: `pytest --cov-config=app/tests/.coveragerc --cov=app app/tests`
@@ -57,8 +62,9 @@ This app can now be run in Docker using the included docker-compose.yml and Dock
 
 #### TODO:
 * Complete this documentation!
-* Add call to AWS microservice to create AWS user details.
+* ~~Add call to AWS microservice to create AWS user details.~~
 * Make test coverage more comprehensive.
+* Refactor tests to mock AWS microservice call.
 * Add auditing with calls to Rabbit MQ
 * Make code pep8 compliant even though imo pep8 code is uglier and harder to read ;-)
 * Automate docker database creation and population.
