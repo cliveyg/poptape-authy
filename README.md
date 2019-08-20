@@ -8,6 +8,7 @@ Please see [this gist](https://gist.github.com/cliveyg/cf77c295e18156ba74cda4694
 
 ### API routes
 
+To be completed
 ```
 /authy [GET] (Unauthenticated)
 ```
