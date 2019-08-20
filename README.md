@@ -63,7 +63,7 @@ Example Output:
 ```
 Returns a the currently logged in users' details.
 
-```
+
 Example Output:
 ```
 {
