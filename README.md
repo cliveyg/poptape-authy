@@ -35,6 +35,7 @@ Example output:
   ]
 }
 ```
+
 ---
 ```
 /authy/login [POST] (Unauthenticated)
@@ -56,8 +57,8 @@ Example output:
   "token": "dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTadkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa"
 }
 ```
----
 
+---
 ```
 /authy/user [GET] (Authenticated)
 ```
@@ -73,8 +74,8 @@ Example output:
   "username": "joeb"
 }
 ```
----
 
+---
 ```
 /authy/user/<public_id> [GET] (Authenticated)
 ```
@@ -91,8 +92,8 @@ Example output:
   "username": "joeb"
 }
 ```
----
 
+---
 ```
 /authy/user [POST] (Unauthenticated)
 ```
@@ -107,14 +108,72 @@ Example input:
   "username": "joeb"
 }
 ```
-
 Example output (successful user creation):
 ```
 {
   "public_id": "f38ba39a-3682-4803-a498-659f1cd8a304"
 }
 ```
+
 ---
+```
+/authy/user/<public_id> [PUT] (Authenticated)
+```
+Edit user data. To be implemented. Unsure whether to just allow only password changing. What about email? Separate API endpoint or not?
+
+Example input:
+```
+{
+  "password": "somepassword",
+  "confirm_password": "somepassword",
+  "email": "joe@email.com"
+}
+```
+
+---
+```
+/authy/user/<public_id> [DELETE] (Authenticated)
+```
+Endpoint for administrating user deletion. Sets the deleted flag and date but retains other user data. Not sure if this should exist at or here or be spun off into seperate microservice.
+
+---
+```
+/authy/user [DELETE] (Authenticated)
+```
+Endpoint for (self) user deletion. Sets the deleted flag and date but retains other user data. 
+
+---
+```
+/authy/user/<public_id>/role [GET] (Authenticated)
+```
+Administration user endpoint. Get all roles for user defined by public_id. Not sure if this should exist at or here or be spun off into seperate microservice.
+
+---
+```
+/authy/user/role [GET] (Authenticated)
+```
+Get all roles for currently logged in user. 
+
+Example output:
+```
+{
+  "roles": [
+    {
+      "description": "User",
+      "level": 10,
+      "name": "user"
+    },
+    {
+      "description": "Guest",
+      "level": 99,
+      "name": "guest"
+    }
+  ]
+}
+```
+
+---
+
 
 
 ### Notes:
