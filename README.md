@@ -10,43 +10,55 @@ Please see [this gist](https://gist.github.com/cliveyg/cf77c295e18156ba74cda4694
 
 ```
 /authy [GET] (Unauthenticated)
-
+```
 Returns a list of endpoints and accepted methods for each..
-Valid return codes: [200]
 
 Example Output:
+```
 {
   "endpoints": [
     {
       "methods": ["OPTIONS","HEAD","GET"],
       "url": "/authy/ratelimited"
-    }
+    },
+    {
+      "methods": ["OPTIONS","POST"],
+      "url": "/authy/login"
+    },
+    {
+      "methods": ["OPTIONS","HEAD","GET"],
+      "url": "/authy/role/<role_name>/users"
+    },
+    .
+    .
+    .
   ]
 }
-
+```
 -------------------------------------------------------------------------------
-
+```
 /authy/login [POST] (Unauthenticated)
-
-Returns a JWT token if authentication is successful. I am using for based auth 
+```
+Returns a JWT token if authentication is successful. Uses an http POST auth 
 as HTTP Basic Authorization has problems with utf8 characters in password and 
 name fields.
-Valid return codes: [200, 400, 401, 429, 500]
 
 Example Input:
+```
 {
   "username": "someuser",
   "password": "somepass",
 }
-
+```
 Example Output:
+```
 {
-  "token": "biglongstringforjwt",
+  "token": "dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTadkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa",
 }
-
+```
 -------------------------------------------------------------------------------
 
-```
+
 
 #### Notes:
 * Creating a user currently fails the AWS part as the AWS microservice isn't 
