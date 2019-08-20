@@ -1,6 +1,6 @@
 # poptape-auth
 
-A Flask Python based microservice to authenticate and authorize. Uses Postgres as the database. This is a Json based REST API that provides authentication and authorization via JWT. All endpoints that require authorization to use must have a JWT token in the HTTP header 'x-access-token'
+A Flask Python based microservice to authenticate and authorize. Uses Postgres as the database. This is a Json based REST API that provides authentication and authorization via JWT. All endpoints that require authorization to use must have a JWT token in the HTTP header 'x-access-token'. I'm probably going to change this for production as the microservices will sit behind an API server and the system will use public/private keys for encoding the JWT and won't need to call authorization on every call. This will reduce network traffic a lot.
 
 This is a heavily refactored version of my earlier login microservice. It has been changed to a application factory to enable easier unit tesing amongst other advantages.
 
@@ -35,7 +35,7 @@ Example Output:
   ]
 }
 ```
--------------------------------------------------------------------------------
+---
 ```
 /authy/login [POST] (Unauthenticated)
 ```
@@ -56,9 +56,25 @@ Example Output:
   "token": "dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa.dkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTadkk3FJpM9mnmEO0UHV-CPHAs6aIv5WPTa",
 }
 ```
--------------------------------------------------------------------------------
+---
 
+```
+/authy/user [GET] (Authenticated)
+```
+Returns a the currently logged in users' details.
 
+```
+Example Output:
+```
+{
+  "created": "Tue, 11 Jun 2019 10:03:09 GMT",
+  "email": "joe@email.com",
+  "last_login": "Tue, 20 Aug 2019 09:13:43 GMT",
+  "public_id": "f38ba39a-3682-4803-a498-659f1cd8a304",
+  "username": "joeb"
+}
+```
+---
 
 #### Notes:
 * Creating a user currently fails the AWS part as the AWS microservice isn't 
