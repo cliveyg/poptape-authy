@@ -9,6 +9,8 @@ import logging
 
 def call_aws(token, public_id):
 
+    app.logger.debug("call_aws")
+
     url = app.config['AWS_URL'] 
     headers = { 'Content-type': 'application/json',
                 'x-access-token': token }
@@ -17,7 +19,8 @@ def call_aws(token, public_id):
 
     try:
         r = requests.post(url, data=json.dumps(data), headers=headers)
-    except:
+    except Exception as err:
+        app.logger.error(str(err))
         return False
 
     if r.status_code == 201:

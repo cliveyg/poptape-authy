@@ -25,7 +25,8 @@ services:
     networks:
       - net_poptape
   db:
-    image: poptape/authy/db:v0.1
+    #image: poptape/authy/db:v0.1
+    image: postgres:alpine
     restart: always
     env_file:
       - "app/.env"

@@ -1,5 +1,4 @@
 from app import db, limiter
-#from login.aws import create_aws_user
 from app.models import User, Role, UserRole 
 from app.assertions import assert_valid_schema
 from app.main import bp
@@ -107,9 +106,11 @@ def require_access_level(access_level):
 @require_access_level(10)
 def check_access_level(current_user, external_level):
 
+    app.logger.info("Checking access level")
+
     url_string = app.config['BASE_URLS']
     good_urls = url_string.split(",")
-
+    
     if request.host in good_urls:    
 
         numeric_level = 999
@@ -142,10 +143,9 @@ def check_jwt_against_user_id(current_user, user_id):
 
 # log user in
 @bp.route('/authy/login', methods=['POST'])
-@limiter.limit("10/hour")
+@limiter.limit("100/hour")
 def login_user():
 
-    app.logger.info("WOOOOOOOOOO!")
     # check input is valid json
     app.logger.debug(request.get_json())
     try:
@@ -154,7 +154,6 @@ def login_user():
         return jsonify({ 'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
 
     secure = False
-    #app.logger.info(request.headers)
     if 'X-Forwarded-Proto' in request.headers:
         scheme = request.headers['X-Forwarded-Proto']
         if scheme == 'HTTPS' or scheme == 'https':
@@ -295,11 +294,13 @@ def get_one_user(current_user, public_id):
 #------------------------------------------------------------------------------#
 
 @bp.route('/authy/user', methods=['POST'])
-@limiter.limit("10/hour")
+@limiter.limit("20/hour")
 #@token_required
 #@require_access_level(5)
 #def create_user(current_user):
 def create_user():
+
+    app.logger.debug("create_user")
 
     try:
         data = request.get_json()

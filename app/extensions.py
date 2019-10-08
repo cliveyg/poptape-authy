@@ -11,7 +11,7 @@ db = SQLAlchemy()
 # -----------------------------------------------------------------------------
 # set up rate limiting
 limiter = Limiter(key_func=get_remote_address,
-                  default_limits=["50 per minute", "5 per second"])
+                  default_limits=["500 per minute", "50 per second"])
 
 # -----------------------------------------------------------------------------
 # set up flask uuid regex in url finder
