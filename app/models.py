@@ -17,6 +17,10 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True)
     created = db.Column(db.TIMESTAMP(), nullable=False, default=datetime.datetime.utcnow)
     last_login = db.Column(db.TIMESTAMP(), nullable=True)
+    validated = db.Column(db.Boolean, default=False)
+    validation_string = db.Column(db.VARCHAR(160), unique=True)
+    password_reset_string = db.Column(db.VARCHAR(160), unique=True)
+    password_reset_datetime = db.Column(db.TIMESTAMP(), nullable=True)
     deleted = db.Column(db.Boolean, default=False)
     delete_date = db.Column(db.TIMESTAMP(), nullable=True)
 

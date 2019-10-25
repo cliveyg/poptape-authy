@@ -61,7 +61,12 @@ def token_required(f):
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS512')
             
             # get the lowest access level for the current user
-            result = db.session.query(User.username,User.public_id,Role.name,Role.level).filter(User.id == UserRole.user_id).filter(UserRole.role_id == Role.id).filter(User.public_id == data['public_id']).order_by(Role.level).all()
+            result = db.session.query(User.username,User.public_id,Role.name,Role.level)\
+                     .filter(User.id == UserRole.user_id)\
+                     .filter(UserRole.role_id == Role.id)\
+                     .filter(User.public_id == data['public_id'])\
+                     .filter(User.validated == True)\
+                     .order_by(Role.level).all()
             current_user = result[0]
 
         except (SQLAlchemyError, jwt.InvalidTokenError, DBAPIError) as e:
@@ -106,7 +111,7 @@ def require_access_level(access_level):
 @require_access_level(10)
 def check_access_level(current_user, external_level):
 
-    app.logger.info("Checking access level")
+    #app.logger.info("Checking access level")
 
     url_string = app.config['BASE_URLS']
     good_urls = url_string.split(",")
@@ -126,15 +131,15 @@ def check_access_level(current_user, external_level):
 
 #------------------------------------------------------------------------------#
 
-@bp.route('/authy/validate/<user_id>', methods=['GET'])
-@token_required
-@require_access_level(10)
-def check_jwt_against_user_id(current_user, user_id):
-
-    if current_user.public_id == user_id:
-        return jsonify({ 'message': 'On the guest list'}), 200
-
-    return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
+#@bp.route('/authy/validate/<user_id>', methods=['GET'])
+#@token_required
+#@require_access_level(10)
+#def check_jwt_against_user_id(current_user, user_id):
+#
+#    if current_user.public_id == user_id:
+#        return jsonify({ 'message': 'On the guest list'}), 200
+#
+#    return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
     
 
 #-----------------------------------------------------------------------------#
@@ -175,12 +180,14 @@ def login_user():
         return jsonify({ 'message': 'Could not verify user'}), 401 # pragma: no cover
 
     # can't let 'deleted' user login
-    if not user or user.deleted == True:
+    if not user or user.deleted == True or user.validated == False:
         return jsonify({ 'message': 'Could not verify this user'}), 401
 
     # user exists so check password
+    
     if check_password_hash(user.password, login_data.get('password')):
-        token = jwt.encode({ 'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) }, 
+        #username = user.username.encode().decode("utf-8")
+        token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) }, 
                            app.config['SECRET_KEY'],
                            algorithm='HS512')
 
@@ -189,7 +196,7 @@ def login_user():
         try:
             db.session.commit()
             # return the token to client
-            return jsonify({ 'token': token.decode('UTF-8') })
+            return jsonify({ 'token': token.decode("UTF-8") })
         except: # pragma: no cover
             db.session.rollback() # pragma: no cover
             return jsonify({ 'message': 'Oopsy something went wrong, try again' }), 500 # pragma: no cover
@@ -249,6 +256,7 @@ def get_all_users(current_user):
         user_data['email'] = user.email
         user_data['created'] = user.created
         user_data['last_login'] = user.last_login
+        user_data['validated'] = user.validated
         user_data['deleted'] = user.deleted
         user_data['delete_date'] = user.delete_date
         paged_users.append(user_data)
@@ -285,11 +293,59 @@ def get_one_user(current_user, public_id):
     user_data['email'] = user.email
     user_data['created'] = user.created
     user_data['last_login'] = user.last_login
+    user_data['validated'] = user.validated    
     user_data['deleted'] = user.deleted
     user_data['delete_date'] = user.delete_date
 
     return jsonify(user_data)
 
+
+#------------------------------------------------------------------------------#
+
+
+@bp.route('/authy/username/<public_id>', methods=['GET'])
+#@token_required
+#@require_access_level(99)
+def get_username(public_id):
+
+    try:
+        val = uuid.UUID(public_id, version=4)
+    except ValueError:
+        return jsonify({ 'message': 'Invalid UUID'}), 400
+
+    user = User.query.filter_by(public_id=public_id).first()
+
+    if not user or user.deleted:
+        return jsonify({ 'message': 'User not found for id ['+public_id+']' }), 404
+
+    user_data = {}
+    user_data['username'] = user.username
+
+    return jsonify(user_data)
+
+
+#------------------------------------------------------------------------------#
+
+@bp.route('/authy/validate/<validation_string>', methods=['GET'])
+@limiter.limit("20/hour")
+def validate_user(validation_string):
+
+    app.logger.info("Ttrying to valiudate")
+
+    user = User.query.filter_by(validation_string=validation_string).first()
+
+    if not user or user.deleted:
+        return jsonify({ 'message': 'User not found' }), 404    
+
+    try:
+        user.validated = True
+        user.validation_string = ''
+        db.session.commit()
+    except (SQLAlchemyError, DBAPIError) as e:
+        db.session.rollback()
+        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500    
+
+    return jsonify({ 'message': 'User validated' }), 200
 
 #------------------------------------------------------------------------------#
 
@@ -316,6 +372,11 @@ def create_user():
 
         return jsonify({ 'message': 'Check ya inputs mate.', 'error': mess }), 400
 
+    # want to restrict certain usernames - get list from env
+    if data['username'] in app.config['RESTRICTED_USERNAMES']:
+        error_message = 'Your username and/or email is already registered with us'
+        return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
+
     if data['password'] != data['confirm_password']:
         return jsonify({ 'message': 'Passwords don\'t match'}), 400
 
@@ -338,6 +399,7 @@ def create_user():
         new_dict['score'] = results['score']
         return jsonify(new_dict), 401
 
+    validation_string = str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4()) 
     hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha512')
     ts = time.time()
     datetime_string = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
@@ -346,6 +408,7 @@ def create_user():
     new_user = User(public_id = str(uuid.uuid4()),
                     username = data['username'],
                     password = hashed_password,
+                    validation_string = validation_string,
                     created  = datetime_string,
                     last_login = datetime_string,
                     email = data['email']) 

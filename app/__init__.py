@@ -44,7 +44,7 @@ def create_app(config_class=Config):
     handler.setFormatter(formatter)
     app.logger.addHandler(handler)
 
-    app.logger.critical('Praise the FSM! System up and running in [%s]...', app.config['ENVIRONMENT'])
+    app.logger.critical('Praise the FSM! System up and running in [%s] mode', app.config['ENVIRONMENT'])
 
     return app
 
