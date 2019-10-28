@@ -323,6 +323,25 @@ def get_username(public_id):
 
     return jsonify(user_data)
 
+#------------------------------------------------------------------------------#
+
+@bp.route('/authy/fetch/<username>', methods=['GET'])
+#@token_required
+#@require_access_level(99)
+def get_public_id_from_username(username):
+
+    if len(username) > 50: 
+        return jsonify({ 'message': 'Invalid username'}), 400
+
+    user = User.query.filter_by(username=username).first()
+
+    if not user or user.deleted:
+        return jsonify({ 'message': 'User not found for username' }), 404
+
+    user_data = {}
+    user_data['public_id'] = user.public_id
+
+    return jsonify(user_data)
 
 #------------------------------------------------------------------------------#
 
