@@ -9,6 +9,8 @@
 /app/main/__pycache__/
 .coverage
 app/tests/load_live_db.py
+app/*.pyc
+/*.pyc
 # Un-ignore these files - it's bit of a clonky way to do it but it's more secure
 !app/
 !Dockerfile

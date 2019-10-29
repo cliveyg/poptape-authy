@@ -30,8 +30,12 @@ from zxcvbn import zxcvbn
 # reject any non-json requests
 @bp.before_request
 def only_json():
-    if not request.is_json:
-        return jsonify({ 'message': 'Input must be json'}), 400
+    request_path = request.path
+    if request_path[:16] == '/authy/validate/':
+        pass
+    else:
+        if not request.is_json:
+            return jsonify({ 'message': 'Input must be json'}), 400
 
 #-----------------------------------------------------------------------------#
 # wrapper function to check if token is supplied to routes
@@ -349,8 +353,6 @@ def get_public_id_from_username(username):
 @limiter.limit("20/hour")
 def validate_user(validation_string):
 
-    app.logger.info("Ttrying to valiudate")
-
     user = User.query.filter_by(validation_string=validation_string).first()
 
     if not user or user.deleted:
@@ -361,6 +363,7 @@ def validate_user(validation_string):
         user.validation_string = ''
         db.session.commit()
     except (SQLAlchemyError, DBAPIError) as e:
+        app.logger.error(e)
         db.session.rollback()
         return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500    
 

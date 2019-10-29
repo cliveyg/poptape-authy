@@ -23,7 +23,7 @@ COPY . /authy
 WORKDIR /authy
 
 RUN rm -r vauthy
-RUN rm -r migrations
+#RUN rm -r migrations
 RUN rm -r app/tests
 RUN mkdir -p /authy/log
 
