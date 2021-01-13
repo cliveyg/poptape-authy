@@ -395,7 +395,7 @@ def create_user():
         return jsonify({ 'message': 'Check ya inputs mate.', 'error': mess }), 400
 
     # want to restrict certain usernames - get list from env
-    if data['username'] in app.config['RESTRICTED_USERNAMES']:
+    if data['username'].lower() in app.config['RESTRICTED_USERNAMES']:
         error_message = 'Your username and/or email is already registered with us'
         return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
 
@@ -434,6 +434,8 @@ def create_user():
                     created  = datetime_string,
                     last_login = datetime_string,
                     email = data['email']) 
+
+    #TODO: maybe we need to check for usernames that are too similar i.e. Tony and tony
 
     try:
         db.session.add(new_user)
