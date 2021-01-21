@@ -30,8 +30,8 @@ services:
     restart: always
     env_file:
       - "app/.env"
-#    environment:
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    environment:
+      - POSTGRES_PASSWORD=$POSTGRES-ROOT
 #      POSTGRES_USER: ${POSTGRES_USER}
 #      POSTGRES_DB: ${POSTGRES_DB}
     ports:
