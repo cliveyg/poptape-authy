@@ -16,8 +16,7 @@ services:
       - "1234:8001"
     restart: always
     volumes:
-      #- /var/log:/authy/log
-      - /Users/cliveglew/dev/logs:/authy/log
+      - /var/log:/authy/log
     logging:
       driver: "json-file"
       options:
