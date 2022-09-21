@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.10-alpine
 
 # add bash etc as alpine version doesn't have these
 #RUN apk add --no-cache bash git gawk sed grep bc coreutils 
@@ -22,9 +22,9 @@ RUN apk --no-cache add libpq
 COPY . /authy
 WORKDIR /authy
 
-RUN rm -r vauthy
-#RUN rm -r migrations
-RUN rm -r app/tests
+RUN rm -rf vauthy
+RUN rm -rf migrations
+RUN rm -rf app/tests
 RUN mkdir -p /authy/log
 
 # Install any needed packages specified in requirements.txt
