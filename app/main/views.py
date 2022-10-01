@@ -156,7 +156,6 @@ def check_access_level(current_user, external_level):
 def login_user():
 
     # check input is valid json
-    app.logger.debug(request.get_json())
     try:
         login_data = request.get_json()
     except:
