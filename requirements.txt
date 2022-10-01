@@ -11,7 +11,6 @@ cryptography
 Flask
 Flask-Limiter
 Flask-Migrate
-Flask-Script
 Flask-SQLAlchemy
 Flask-Testing
 Flask-UUID
