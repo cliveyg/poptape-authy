@@ -49,7 +49,7 @@ Example input:
 ```
 {
   "username": "someuser",
-  "password": "somepass",
+  "password": "somepass"
 }
 ```
 Example output:
