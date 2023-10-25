@@ -194,13 +194,17 @@ def login_user():
                            app.config['SECRET_KEY'],
                            algorithm='HS512')
 
+        app.logger.debug("Created JWT")
+        app.logger.debug(token)
+
         # update last_login field
         user.last_login = datetime.datetime.utcnow()
         try:
             db.session.commit()
             # return the token to client
-            return jsonify({ 'token': token.decode("UTF-8") })
-        except: # pragma: no cover
+            return jsonify({ 'token': token })
+        except Exception as error: # pragma: no cover
+            app.logger.debug(error)
             db.session.rollback() # pragma: no cover
             return jsonify({ 'message': 'Oopsy something went wrong, try again' }), 500 # pragma: no cover
 
@@ -245,7 +249,8 @@ def get_all_users(current_user):
     try:
         total_records = db.session.query(User).count()
         users = db.session.query(User).paginate(page, users_per_page, False).items
-    except:
+    except Exception as error:
+        app.logger.debug(error)
         return jsonify({ 'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
 
     if len(users) == 0:

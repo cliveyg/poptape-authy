@@ -1,6 +1,8 @@
 # Ignore everything in the root
 /*
 /vauthy/*
+/vauth/*
+.env
 /app/.env
 /.pytest_cache/
 /__pycache__/
