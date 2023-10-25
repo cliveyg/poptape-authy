@@ -59,8 +59,8 @@ jobs:
       - name: Create DB tables
         run: |
           pwd
-      #    psql -h localhost -U poptape_authy_test password=${{ secrets.TESTDB_PASSWORD }} -f pg_schemas/poptape_address_db_schema.sql
-      #    psql -h localhost -U poptape_authy_test password=${{ secrets.TESTDB_PASSWORD }} -c '\dt'
+          psql -h localhost -U poptape_authy_test password=${{ secrets.TESTDB_PASSWORD }} -f db_schema/poptape_auth_db_schema.sql
+          psql -h localhost -U poptape_authy_test password=${{ secrets.TESTDB_PASSWORD }} -c '\dt'
 
       #- name: Test with pytest
       #  run: |
