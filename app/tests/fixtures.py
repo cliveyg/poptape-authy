@@ -160,6 +160,7 @@ def addAdminUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'clivey@email.com')
 
     user2 = User(public_id = str(uuid.uuid4()),
@@ -167,6 +168,7 @@ def addAdminUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'bobby@email.com')
 
     db.session.add(user1)
