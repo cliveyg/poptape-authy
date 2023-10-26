@@ -535,7 +535,7 @@ class MyTest(FlaskTestCase):
         response = self.client.post('/authy/user',
                                     json=create_user,
                                     headers=headers)
-        self.assertEqual(len(mock_post.call_args_list), 0)
+        self.assertEqual(len(mock_post.call_args_list), 1)
         self.assertEqual(response.status_code, 201)
 
 # -----------------------------------------------------------------------------
