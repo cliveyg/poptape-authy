@@ -53,7 +53,7 @@ def addTestRoles():
 
 def addNormalUsers():
 
-    roles = []
+    # roles = []
     roles = Role.query.all()
     if len(roles) == 0:
         roles = addTestRoles()
@@ -63,6 +63,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'woody@email.com')
 
     user2 = User(public_id = str(uuid.uuid4()),
@@ -70,6 +71,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'mandy@email.com')
 
     user3 = User(public_id = str(uuid.uuid4()),
@@ -77,6 +79,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  deleted = True,
                  delete_date = make_datetime_string(),
                  email = 'harry@email.com')
@@ -86,6 +89,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'sally@email.com')
 
     user5 = User(public_id = str(uuid.uuid4()),
@@ -93,6 +97,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'mary@email.com')
 
     user6 = User(public_id = str(uuid.uuid4()),
@@ -100,6 +105,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = 'Sun, 09 Jun 2019 18:33:32 GMT',
                  last_login = 'Sun, 09 Jun 2019 18:33:32 GMT',
+                 validated = True,
                  email = 'lucky@email.com')
 
     user7 = User(public_id = str(uuid.uuid4()),
@@ -107,6 +113,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = 'Sun, 09 Jun 2019 18:33:32 GMT',
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'brüna@email.com')
 
     user8 = User(public_id = str(uuid.uuid4()),
@@ -114,6 +121,7 @@ def addNormalUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'djing@email.com')
 
     db.session.add(user1)
@@ -142,7 +150,6 @@ def addNormalUsers():
 def addAdminUsers():
 
     # check if roles are present and if not then add them
-    roles = []
     roles = Role.query.all()
     if len(roles) == 0:
         roles = addTestRoles() # pragma: no cover
@@ -152,6 +159,7 @@ def addAdminUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'clivey@email.com')
 
     user2 = User(public_id = str(uuid.uuid4()),
@@ -159,6 +167,7 @@ def addAdminUsers():
                  password = generate_password_hash('password'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
+                 validated = True,
                  email = 'bobby@email.com')
 
     db.session.add(user1)
@@ -174,5 +183,7 @@ def addAdminUsers():
     db.session.add(userole2)
 
     db.session.commit()
+
+    return users
 
 
