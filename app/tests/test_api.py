@@ -43,6 +43,7 @@ class MyTest(FlaskTestCase):
     def test_status_ok(self):
         headers = { 'Content-type': 'application/json' }
         response = self.client.get('/authy/status', headers=headers)
+
         self.assertEqual(response.status_code, 200)
 
 # -----------------------------------------------------------------------------
@@ -74,10 +75,11 @@ class MyTest(FlaskTestCase):
 
     def test_database_loads_ok(self):
         added_users = addNormalUsers()
-        roles = []
+        self.assertEqual(len(added_users), 8)
+        #roles = []
         roles = Role.query.all()
         self.assertEqual(len(roles), 4)
-        users = []
+        #users = []
         users = User.query.all()
         self.assertEqual(len(users), 8)
 
@@ -158,6 +160,7 @@ class MyTest(FlaskTestCase):
 
     def test_login_ok(self):
         users = addNormalUsers()
+
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(),
