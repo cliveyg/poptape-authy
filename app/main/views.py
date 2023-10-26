@@ -177,6 +177,7 @@ def login_user():
         return jsonify({ 'message': 'Check ya inputs mate'}), 400
 
     #TODO: refactor this - could do a lot of checks in the model query
+    app.logger.debug("Username is  [%s]", login_data.get('username'))
     try:
         user = User.query.filter_by(username = login_data.get('username')).first()
     except: # pragma: no cover

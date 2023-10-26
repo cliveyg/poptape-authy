@@ -162,7 +162,7 @@ class MyTest(FlaskTestCase):
     def test_login_ok(self):
         added_users = addNormalUsers()
         self.assertEqual(len(added_users), 8)
-        print('No of added users is: '+str(len(added_users)))
+        print('\n\nNo of added users is: '+str(len(added_users))+'\n\n')
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(),
