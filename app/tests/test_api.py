@@ -383,23 +383,23 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-#    def test_validate_user_restriction(self):
+    def test_validate_user_restriction(self):
 
-#        users = addNormalUsers()
-#        self.assertEqual(len(users), 8)
-#        admins = addAdminUsers()
-#        self.assertEqual(len(admins), 2)
-#        headers = { 'Content-type': 'application/json' }
-#        response = self.client.post('/authy/login',
-#                                    json=login_body(name="lucky",
-#                                                    passwd="password"),
-#                                    headers=headers)
-#        self.assertEqual(response.status_code, 200)
-#        data = response.json
-#        url = '/authy/validate/' + users[3].public_id
-#        response2 = self.client.get(url,
-#                                    headers=headers_with_token(data['token']))
-#        self.assertEqual(response2.status_code, 401)
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="lucky",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+        url = '/authy/validate/' + users[3].public_id
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 401)
 
     # -----------------------------------------------------------------------------
 
