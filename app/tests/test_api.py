@@ -3,6 +3,8 @@ from mock import patch
 from functools import wraps
 from flask import jsonify
 
+from unittest.mock import Mock, patch
+
 from app import create_app, db
 from app.models import User, Role, UserRole
 from app.config import TestConfig
@@ -504,7 +506,10 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_create_user_ok(self):
+    @patch('services.requests.get')
+    def test_create_user_ok(mock_get):
+
+        mock_get.return_value.ok = True
 
         users = addNormalUsers()
         self.assertEqual(len(users), 8)

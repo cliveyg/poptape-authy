@@ -471,7 +471,7 @@ def create_user():
         app.logger.error(str(e))
         db.session.rollback() # pragma: no cover
 
-        return jsonify({ 'message': 'Oopsy, something went bang.'}), 501 # pragma: no cover
+        return jsonify({ 'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
 
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
@@ -483,7 +483,7 @@ def create_user():
         return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
                          'token': token.decode('UTF-8') }), 201
     db.session.rollback() 
-    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 502
+    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 500
 
 
 #------------------------------------------------------------------------------#
