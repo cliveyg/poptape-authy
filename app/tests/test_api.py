@@ -18,7 +18,7 @@ import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # this method will be used by the mock to replace requests.get
-def mocked_requests_get(*args, **kwargs):
+def mocked_requests_post(*args, **kwargs):
     class MockResponse:
         def __init__(self, json_data, status_code):
             self.json_data = json_data
@@ -28,7 +28,7 @@ def mocked_requests_get(*args, **kwargs):
             return self.json_data
 
     if args[0] == 'https://poptape.club/aws/user':
-        return MockResponse({"key1": "value1"}, 200)
+        return MockResponse({"key1": "value1"}, 201)
 
     return MockResponse(None, 404)
 
@@ -522,8 +522,8 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     # @patch('call_aws', MagicMock(return_value=True))
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_create_user_ok(self, mock_get):
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
+    def test_create_user_ok(self, mock_post):
 
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
@@ -535,7 +535,7 @@ class MyTest(FlaskTestCase):
         response = self.client.post('/authy/user',
                                     json=create_user,
                                     headers=headers)
-        self.assertEqual(len(mock_get.call_args_list), 0)
+        self.assertEqual(len(mock_post.call_args_list), 0)
         self.assertEqual(response.status_code, 201)
 
 # -----------------------------------------------------------------------------
