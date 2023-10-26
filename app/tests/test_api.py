@@ -521,7 +521,6 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    # @patch('call_aws', MagicMock(return_value=True))
     @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_create_user_ok(self, mock_post):
 
@@ -537,5 +536,107 @@ class MyTest(FlaskTestCase):
                                     headers=headers)
         self.assertEqual(len(mock_post.call_args_list), 1)
         self.assertEqual(response.status_code, 201)
+
+    # -----------------------------------------------------------------------------
+
+    def test_create_user_fail_due_to_weak_password(self):
+
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        create_user = { 'username': 'user1',
+                        'password': 'password',
+                        'confirm_password': 'password',
+                        'email': 'user1@email.com' }
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 401)
+        data = response.json
+        self.assertEqual(data.get('message'), "Sorry your password is too weak, please try another")
+
+    # -----------------------------------------------------------------------------
+
+    def test_create_user_fail_passwords_do_not_match(self):
+
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        create_user = { 'username': 'user1',
+                        'password': 'hdqi73dhksdd',
+                        'confirm_password': 'hdqi73dhksd',
+                        'email': 'user1@email.com' }
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 400)
+        data = response.json
+        self.assertEqual(data.get('message'), "Passwords don\'t match")
+
+    # -----------------------------------------------------------------------------
+
+    def test_create_fail_bad_email(self):
+
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        create_user = { 'username': 'user1',
+                        'password': 'hgfkwyg322dd',
+                        'confirm_password': 'hgfkwyg322dd',
+                        'email': 'user1@email' }
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(data.get('error'), "Email address is not valid")
+
+    # -----------------------------------------------------------------------------
+
+    def test_create_fail_duplicate_username(self):
+
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        create_user = { 'username': 'woody',
+                        'password': 'hgfkwyg322dd',
+                        'confirm_password': 'hgfkwyg322dd',
+                        'email': 'woody12@email.com' }
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(data.get('error'),
+                         "Your username and/or email is already registered with us")
+
+    # -----------------------------------------------------------------------------
+
+    def test_create_fail_duplicate_email(self):
+
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        create_user = { 'username': 'woodyh',
+                        'password': 'hgfkwyg322dd',
+                        'confirm_password': 'hgfkwyg322dd',
+                        'email': 'woody@email.com' }
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(data.get('error'),
+                         "Your username and/or email is already registered with us")
+
+    # -----------------------------------------------------------------------------
+
+    def test_delete_user_ok(self):
+        users = addNormalUsers()
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="woody",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        response2 = self.client.delete('/authy/user',
+                                       headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 204)
 
 # -----------------------------------------------------------------------------
