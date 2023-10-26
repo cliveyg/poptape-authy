@@ -1120,7 +1120,7 @@ class MyTest(FlaskTestCase):
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 200)
 
-# -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
 
     def test_normal_user_delete_user_from_role_fail(self):
         users = addNormalUsers()
