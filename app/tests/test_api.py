@@ -38,6 +38,21 @@ class MyTest(FlaskTestCase):
         db.session.remove()
         db.drop_all()
 
+# this method will be used by the mock to replace requests.get
+def mocked_requests_get(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    if args[0] == 'https://poptape.club/aws/user':
+        return MockResponse({"key1": "value1"}, 200)
+
+    return MockResponse(None, 404)
+
 ###############################################################################
 #                                tests                                        #
 ###############################################################################
@@ -506,10 +521,8 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    @patch('services.requests.get')
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_create_user_ok(mock_get):
-
-        mock_get.return_value.ok = True
 
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
