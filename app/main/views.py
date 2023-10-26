@@ -180,7 +180,7 @@ def login_user():
     try:
         user = User.query.filter_by(username = login_data.get('username')).first()
     except: # pragma: no cover
-        return jsonify({ 'message': 'Could not verify user'}), 401 # pragma: no cover
+        return jsonify({ 'message': 'Could not verify user'}), 418 # pragma: no cover
 
     # can't let 'deleted' user login
     if not user or user.deleted == True or user.validated == False:
