@@ -106,6 +106,7 @@ def addNormalUsers():
                  created  = 'Sun, 09 Jun 2019 18:33:32 GMT',
                  last_login = 'Sun, 09 Jun 2019 18:33:32 GMT',
                  validated = True,
+                 validation_string = 'blahblah48732947',
                  email = 'lucky@email.com')
 
     user7 = User(public_id = str(uuid.uuid4()),
