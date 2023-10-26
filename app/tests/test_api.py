@@ -83,3 +83,21 @@ class MyTest(FlaskTestCase):
 
 # -----------------------------------------------------------------------------
 
+    def test_user_model_saves_ok(self):
+        user1 = User(public_id = str(uuid.uuid4()),
+                     username = 'woody',
+                     password = generate_password_hash('password'),
+                     created  = make_datetime_string(),
+                     last_login = make_datetime_string(),
+                     email = 'woody@email.com')
+        db.session.add(user1)
+        db.session.commit()
+        self.assertEqual(user1.id, 1)
+
+    # -----------------------------------------------------------------------------
+
+    def test_role_model_saves_ok(self):
+        role1 = Role(name = "superadmin", description = "God level", level=0)
+        db.session.add(role1)
+        db.session.commit()
+        self.assertEqual(role1.id, 1)
