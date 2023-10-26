@@ -184,7 +184,7 @@ def login_user():
 
     # can't let 'deleted' user login
     if not user or user.deleted == True or user.validated == False:
-        return jsonify({ 'message': 'Could not verify this user'}), 401
+        return jsonify({ 'message': 'Could not verify this user'}), 413
 
     # user exists so check password
     

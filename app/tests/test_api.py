@@ -162,6 +162,7 @@ class MyTest(FlaskTestCase):
         response = self.client.post('/authy/login',
                                     json=login_body(),
                                     headers=headers)
+
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.json)
 
