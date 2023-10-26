@@ -135,7 +135,8 @@ class MyTest(FlaskTestCase):
 
     def test_cannot_login_with_wrong_pass(self):
         added_users = addNormalUsers()
-        self.assertEqual(len(added_users), 8)        headers = { 'Content-type': 'application/json' }
+        self.assertEqual(len(added_users), 8)
+        headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="sally",
                                                     passwd="pAssword"),
