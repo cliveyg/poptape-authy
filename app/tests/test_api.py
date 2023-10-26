@@ -542,6 +542,7 @@ class MyTest(FlaskTestCase):
     def test_create_user_fail_due_to_weak_password(self):
 
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         create_user = { 'username': 'user1',
                         'password': 'password',
@@ -559,6 +560,7 @@ class MyTest(FlaskTestCase):
     def test_create_user_fail_passwords_do_not_match(self):
 
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         create_user = { 'username': 'user1',
                         'password': 'hdqi73dhksdd',
@@ -576,6 +578,7 @@ class MyTest(FlaskTestCase):
     def test_create_fail_bad_email(self):
 
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         create_user = { 'username': 'user1',
                         'password': 'hgfkwyg322dd',
@@ -593,6 +596,7 @@ class MyTest(FlaskTestCase):
     def test_create_fail_duplicate_username(self):
 
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         create_user = { 'username': 'woody',
                         'password': 'hgfkwyg322dd',
@@ -611,6 +615,7 @@ class MyTest(FlaskTestCase):
     def test_create_fail_duplicate_email(self):
 
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         create_user = { 'username': 'woodyh',
                         'password': 'hgfkwyg322dd',
@@ -627,7 +632,9 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_delete_user_ok(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="woody",
@@ -642,8 +649,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_delete_user_ok(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -659,8 +669,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_delete_user_404(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -676,8 +689,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_non_admin_cannot_delete_other_user(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="woody",
@@ -693,8 +709,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_return_all_roles(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -710,8 +729,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_return_role_details(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -727,8 +749,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_return_404_for_nonexistent_role_details(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -744,8 +769,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_normal_user_get_roles_fail(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="woody",
@@ -761,8 +789,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_normal_user_get_role_details_fail(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="woody",
@@ -778,8 +809,11 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_admin_return_all_users_for_role(self):
+
         users = addNormalUsers()
+        self.assertEqual(len(users), 8)
         admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="clivey",
@@ -797,3 +831,293 @@ class MyTest(FlaskTestCase):
         self.assertEqual(len(data.get("users")), 8)
 
     # -----------------------------------------------------------------------------
+
+    def test_admin_return_404_for_nonexistent_role(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/wibble/users'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_normal_user_return_all_users_for_role_fail(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="woody",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 401)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_ok(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/admin/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 200)
+        data = response2.json
+        self.assertIn(users[0].username, data.get('message'))
+        self.assertIn("user", data.get('message'))
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_already_assigned(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 400)
+        data = response2.json
+        self.assertIn("User already assigned to role", data.get('message'))
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_bad_role(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/bling/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_bad_public_id(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/dsalkdhakldhkashjd'
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_delete_user_from_role_ok(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/'+users[0].public_id
+        response2 = self.client.delete(url,
+                                       headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 200)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_return_404_for_nonexistent_role(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/wibble/users'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_normal_user_return_all_users_for_role_fail(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="woody",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 401)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_ok(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/admin/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 200)
+        data = response2.json
+        self.assertIn(users[0].username, data.get('message'))
+        self.assertIn("user", data.get('message'))
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_already_assigned(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 400)
+        data = response2.json
+        self.assertIn("User already assigned to role", data.get('message'))
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_bad_role(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/bling/users/'+users[0].public_id
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_assign_user_to_role_fail_bad_public_id(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/dsalkdhakldhkashjd'
+        response2 = self.client.post(url,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_delete_user_from_role_ok(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role/user/users/'+users[0].public_id
+        response2 = self.client.delete(url,
+                                       headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 200)
+
+# -----------------------------------------------------------------------------
