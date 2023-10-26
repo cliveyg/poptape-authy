@@ -504,9 +504,9 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_create_user_ok(self, mock_get):
-
+    # @mock.patch('requests.get', side_effect=mocked_requests_get)
+    def test_create_user_ok(self):
+        @patch('call_aws', MagicMock(return_value=200))
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
