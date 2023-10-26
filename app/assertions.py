@@ -1,6 +1,6 @@
 import os.path
 import json
-from jsonschema import validate, draft7_format_checker
+from jsonschema import validate, Draft7Validator
 from jsonschema.exceptions import ValidationError as JsonValidationError
 
 from flask import current_app as app
@@ -19,7 +19,7 @@ def assert_valid_schema(data, schema_type):
     elif schema_type == 'role':
         schema = _load_json_schema('schemas/role_schema.json')    
 
-    return validate(data, schema, format_checker=draft7_format_checker)
+    return validate(data, schema, format_checker=Draft7Validator.FORMAT_CHECKER)
 
 # -----------------------------------------------------------------------------
 
