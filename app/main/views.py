@@ -481,7 +481,7 @@ def create_user():
 
     if call_aws(token, new_user.public_id):
         return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
-                         'token': token.decode('UTF-8') }), 201
+                         'token': token }), 201
     db.session.rollback() 
     return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 500
 
