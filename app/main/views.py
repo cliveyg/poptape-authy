@@ -358,6 +358,9 @@ def get_public_id_from_username(username):
 @limiter.limit("20/hour")
 def validate_user(validation_string):
 
+    # TODO: make sure cannot validate against another user - do we need to be logged in to validate?
+    # if so then need to add decorators?
+
     user = User.query.filter_by(validation_string=validation_string).first()
 
     if not user or user.deleted:

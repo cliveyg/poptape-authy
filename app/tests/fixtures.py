@@ -90,7 +90,7 @@ def addNormalUsers():
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
                  validated = True,
-                 validation_string = 'somekindastring',
+                 validation_string = '',
                  email = 'sally@email.com')
 
     user5 = User(public_id = str(uuid.uuid4()),

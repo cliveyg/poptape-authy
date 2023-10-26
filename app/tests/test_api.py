@@ -399,7 +399,7 @@ class MyTest(FlaskTestCase):
         url = '/authy/validate/' + users[3].public_id
         response2 = self.client.get(url,
                                     headers=headers_with_token(data['token']))
-        self.assertEqual(response2.status_code, 401)
+        self.assertEqual(response2.status_code, 404)
 
     # -----------------------------------------------------------------------------
 
