@@ -76,11 +76,8 @@ class MyTest(FlaskTestCase):
     def test_database_loads_ok(self):
         added_users = addNormalUsers()
         self.assertEqual(len(added_users), 8)
-        print('No of added users is: '+str(len(added_users)))
-        #roles = []
         roles = Role.query.all()
         self.assertEqual(len(roles), 4)
-        #users = []
         users = User.query.all()
         self.assertEqual(len(users), 8)
 
@@ -137,8 +134,8 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_cannot_login_with_wrong_pass(self):
-        users = addNormalUsers()
-        headers = { 'Content-type': 'application/json' }
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)        headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="sally",
                                                     passwd="pAssword"),
@@ -148,13 +145,13 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_cannot_login_with_user_that_does_not_exist(self):
-        users = addNormalUsers()
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="ronald",
                                                     passwd="password"),
                                     headers=headers)
-        print(response.json)
         self.assertEqual(response.status_code, 401)
 
     # -----------------------------------------------------------------------------
@@ -187,7 +184,8 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_login_fails_bad_json(self):
-        users = addNormalUsers()
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
         headers = { 'Content-type': 'application/json' }
         bad_string = '{ "bad" "json }'
         response = self.client.post('/authy/login',
@@ -198,7 +196,8 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     def test_login_fails_user_not_existing(self):
-        users = addNormalUsers()
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="pigsy",
@@ -207,5 +206,124 @@ class MyTest(FlaskTestCase):
         data = response.json
         self.assertEqual(response.status_code, 401)
         self.assertEqual(data.get('message'), "Could not verify this user")
+
+# -----------------------------------------------------------------------------
+
+    def test_login_fails_bad_password(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="mandy",
+                                                    passwd="wrongpass"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(data.get('message'), "Could not verify user identity")
+
+    # -----------------------------------------------------------------------------
+
+    def test_deleted_user_fail_login(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="harry",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 401)
+
+    # -----------------------------------------------------------------------------
+
+    def test_can_get_own_user_data(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="sally",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+
+        response = self.client.get('/authy/user',
+                                   headers=headers_with_token(data['token']))
+        self.assertEqual(response.status_code, 200)
+        user_data = response.json
+
+        self.assertEqual(user_data["username"], "sally")
+        self.assertEqual(user_data["email"], "sally@email.com")
+
+    # -----------------------------------------------------------------------------
+
+    def test_invalid_token(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        response = self.client.get('/authy/user',
+                                   headers=headers_with_token('invalid_token'))
+        self.assertEqual(response.status_code, 401)
+        user_data = response.json
+        self.assertEqual(user_data["message"], "Invalid token.")
+
+    # -----------------------------------------------------------------------------
+
+    def test_invalid_token_wrong_users_token(self):
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="sally",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+
+        url = '/authy/user/'+users[5].public_id
+        response = self.client.get(url,
+                                   headers=headers_with_token(data['token']))
+        self.assertEqual(response.status_code, 401)
+        user_data = response.json
+        self.assertEqual(user_data["message"], "Severe tutting ensues.")
+
+    # -----------------------------------------------------------------------------
+
+    def test_normal_user_cannot_get_list_all_users(self):
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="sally",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+
+        response = self.client.get('/authy/users',
+                                   headers=headers_with_token(data['token']))
+        self.assertEqual(response.status_code, 401)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_user_get_list_all_users(self):
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        admins = addAdminUsers()
+        self.assertEqual(len(admins), 2)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+
+        response = self.client.get('/authy/users',
+                                   headers=headers_with_token(data['token']))
+        self.assertEqual(response.status_code, 200)
+        data = response.json
+        self.assertEqual(data.get('total_records'), 10)
+        users_per_page = int(TestConfig.USERS_LIMIT_PER_PAGE)
+        self.assertEqual(len(data.get('users')), users_per_page)
+        self.assertEqual(data.get('next_url'), "/authy/users?page=2")
 
 # -----------------------------------------------------------------------------
