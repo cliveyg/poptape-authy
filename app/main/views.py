@@ -146,9 +146,9 @@ def check_access_level(current_user, external_level):
 #    return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
     
 
-#-----------------------------------------------------------------------------#
+# --------------------------------------------------------------------------- #
 # user routes
-#-----------------------------------------------------------------------------#
+# --------------------------------------------------------------------------- #
 
 # log user in
 @bp.route('/authy/login', methods=['POST'])
@@ -211,7 +211,7 @@ def login_user():
     return jsonify({ 'message': 'Could not verify user identity'}), 401
 
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 
 @bp.route('/authy/user', methods=['GET'])
@@ -233,7 +233,7 @@ def get_current_user_details(current_user):
 
     return jsonify(user_data), 200
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 
 @bp.route('/authy/users', methods=['GET'])
@@ -284,7 +284,7 @@ def get_all_users(current_user):
 
     return jsonify(output), 200
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 
 @bp.route('/authy/user/<public_id>', methods=['GET'])
@@ -309,7 +309,7 @@ def get_one_user(current_user, public_id):
     return jsonify(user_data)
 
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 
 @bp.route('/authy/username/<public_id>', methods=['GET'])
@@ -332,7 +332,7 @@ def get_username(public_id):
 
     return jsonify(user_data)
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 @bp.route('/authy/fetch/<username>', methods=['GET'])
 #@token_required
@@ -352,7 +352,7 @@ def get_public_id_from_username(username):
 
     return jsonify(user_data)
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 @bp.route('/authy/validate/<validation_string>', methods=['GET'])
 @limiter.limit("20/hour")
@@ -377,7 +377,7 @@ def validate_user(validation_string):
 
     return jsonify({ 'message': 'User validated' }), 200
 
-#------------------------------------------------------------------------------#
+# ---------------------------------------------------------------------------- #
 
 @bp.route('/authy/user', methods=['POST'])
 @limiter.limit("20/hour")
@@ -457,7 +457,7 @@ def create_user():
             return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
         else:
             error_message = 'We were unable to create your user profile'
-            return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 500 
+            return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 500
 
     # assign 'user' role to new user
     role = Role.query.filter_by(name="user").first()
@@ -471,7 +471,7 @@ def create_user():
         app.logger.error(str(e))
         db.session.rollback() # pragma: no cover
 
-        return jsonify({ 'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
+        return jsonify({ 'message': 'Oopsy, something went bang.'}), 501 # pragma: no cover
 
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
@@ -483,7 +483,7 @@ def create_user():
         return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
                          'token': token.decode('UTF-8') }), 201
     db.session.rollback() 
-    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 500
+    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 502
 
 
 #------------------------------------------------------------------------------#
