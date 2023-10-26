@@ -1,5 +1,5 @@
 # app/tests/test_api.py
-from mock import patch
+from mock import patch, MagicMock
 from functools import wraps
 from flask import jsonify
 
@@ -505,8 +505,9 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     # @mock.patch('requests.get', side_effect=mocked_requests_get)
+    @patch('call_aws', MagicMock(return_value=True))
     def test_create_user_ok(self):
-        @patch('call_aws', MagicMock(return_value=True))
+
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
