@@ -150,7 +150,6 @@ def addNormalUsers():
 def addAdminUsers():
 
     # check if roles are present and if not then add them
-    roles = []
     roles = Role.query.all()
     if len(roles) == 0:
         roles = addTestRoles() # pragma: no cover
@@ -184,5 +183,7 @@ def addAdminUsers():
     db.session.add(userole2)
 
     db.session.commit()
+
+    return users
 
 
