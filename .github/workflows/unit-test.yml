@@ -65,4 +65,4 @@ jobs:
       - name: Test with pytest
         run: |
           touch poptape_authy.log
-          coverage run -m pytest -s --cov=app app/tests
+          coverage run -m pytest -v --cov=app app/tests
