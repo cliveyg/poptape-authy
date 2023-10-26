@@ -8,23 +8,6 @@ import datetime
 import time
 from requests.auth import _basic_auth_str
 from werkzeug.security import generate_password_hash, check_password_hash
-import unittest
-from unittest import mock
-
-# this method will be used by the mock to replace requests.get
-def mocked_requests_get(*args, **kwargs):
-    class MockResponse:
-        def __init__(self, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-
-        def json(self):
-            return self.json_data
-
-    if args[0] == 'https://poptape.club/aws/user':
-        return MockResponse({"key1": "value1"}, 200)
-
-    return MockResponse(None, 404)
 
 # users and roles for testing
 

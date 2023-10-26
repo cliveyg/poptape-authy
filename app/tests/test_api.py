@@ -1,5 +1,7 @@
 # app/tests/test_api.py
-from mock import patch, MagicMock
+# from mock import patch, MagicMock
+import unittest
+from unittest import mock
 from functools import wraps
 from flask import jsonify
 
@@ -8,13 +10,27 @@ from app.models import User, Role, UserRole
 from app.config import TestConfig
 from .fixtures import addNormalUsers, addAdminUsers, headers_with_token
 from .fixtures import login_body, make_datetime_string, mocked_requests_get
-from app.services import call_aws
 
 from flask import current_app 
 from flask_testing import TestCase as FlaskTestCase
 
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
+
+# this method will be used by the mock to replace requests.get
+def mocked_requests_get(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    if args[0] == 'https://poptape.club/aws/user':
+        return MockResponse({"key1": "value1"}, 200)
+
+    return MockResponse(None, 404)
 
 ###############################################################################
 #                         flask test case instance                            #
@@ -505,8 +521,8 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    # @mock.patch('requests.get', side_effect=mocked_requests_get)
-    @patch('call_aws', MagicMock(return_value=True))
+    # @patch('call_aws', MagicMock(return_value=True))
+    @mock.patch('requests.get', side_effect=mocked_requests_get)
     def test_create_user_ok(self):
 
         users = addNormalUsers()
