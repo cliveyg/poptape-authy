@@ -195,7 +195,7 @@ def login_user():
                            algorithm='HS512')
 
         app.logger.debug("Created JWT")
-        app.logger.debug(token)
+        #app.logger.debug(token)
 
         # update last_login field
         user.last_login = datetime.datetime.utcnow()
@@ -248,7 +248,8 @@ def get_all_users(current_user):
 
     try:
         total_records = db.session.query(User).count()
-        users = db.session.query(User).paginate(page, users_per_page, False).items
+        users = db.session.query(User).paginate(page=page, per_page=users_per_page, error_out=False).items
+
     except Exception as error:
         app.logger.debug(error)
         return jsonify({ 'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
