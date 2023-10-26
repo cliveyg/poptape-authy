@@ -62,7 +62,7 @@ jobs:
           psql -h localhost -U poptape_auth_test password=${{ secrets.TESTDB_PASSWORD }} -f db_schema/poptape_auth_db_schema.sql
           psql -h localhost -U poptape_auth_test password=${{ secrets.TESTDB_PASSWORD }} -c '\dt'
 
-      #- name: Test with pytest
-      #  run: |
-      #    touch poptape_authy.log
-      #    coverage run -m pytest --cov=app app/tests
+      - name: Test with pytest
+        run: |
+          touch poptape_authy.log
+          coverage run -m pytest --cov=app app/tests
