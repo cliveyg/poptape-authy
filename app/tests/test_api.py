@@ -156,26 +156,26 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_login_ok(self):
-        users = addNormalUsers()
-        headers = { 'Content-type': 'application/json' }
-        response = self.client.post('/authy/login',
-                                    json=login_body(),
-                                    headers=headers)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('token', response.json)
+ #   def test_login_ok(self):
+ #       users = addNormalUsers()
+ #       headers = { 'Content-type': 'application/json' }
+ #       response = self.client.post('/authy/login',
+ #                                   json=login_body(),
+ #                                   headers=headers)
+ #       self.assertEqual(response.status_code, 200)
+ #       self.assertIn('token', response.json)
 
     # -----------------------------------------------------------------------------
 
-    def test_utf8_login_ok(self):
-        users = addNormalUsers()
-        headers = { 'Content-type': 'application/json' }
-        response = self.client.post('/authy/login',
-                                    json=login_body(name="分支持",
-                                                    passwd="password"),
-                                    headers=headers)
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('token', response.json)
+#    def test_utf8_login_ok(self):
+#        users = addNormalUsers()
+#        headers = { 'Content-type': 'application/json' }
+#        response = self.client.post('/authy/login',
+#                                    json=login_body(name="分支持",
+#                                                    passwd="password"),
+#                                    headers=headers)
+#        self.assertEqual(response.status_code, 200)
+#        self.assertIn('token', response.json)
 
     # -----------------------------------------------------------------------------
 

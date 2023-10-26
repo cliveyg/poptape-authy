@@ -53,7 +53,6 @@ def addTestRoles():
 
 def addNormalUsers():
 
-    # check if countries are present and if not then add them
     roles = []
     roles = Role.query.all()
     if len(roles) == 0:
