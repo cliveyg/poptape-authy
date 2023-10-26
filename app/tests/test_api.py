@@ -523,7 +523,7 @@ class MyTest(FlaskTestCase):
 
     # @patch('call_aws', MagicMock(return_value=True))
     @mock.patch('requests.get', side_effect=mocked_requests_get)
-    def test_create_user_ok(self):
+    def test_create_user_ok(self, mock_get):
 
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
@@ -535,6 +535,7 @@ class MyTest(FlaskTestCase):
         response = self.client.post('/authy/user',
                                     json=create_user,
                                     headers=headers)
+        self.assertEqual(len(mock_get.call_args_list), 3)
         self.assertEqual(response.status_code, 201)
 
 # -----------------------------------------------------------------------------
