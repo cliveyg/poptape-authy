@@ -76,7 +76,7 @@ class MyTest(FlaskTestCase):
     def test_database_loads_ok(self):
         added_users = addNormalUsers()
         self.assertEqual(len(added_users), 8)
-        print('No of added users is '+len(added_users))
+        print('No of added users is: '+str(len(added_users)))
         #roles = []
         roles = Role.query.all()
         self.assertEqual(len(roles), 4)
