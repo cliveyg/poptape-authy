@@ -51,6 +51,4 @@ jobs:
           else
             echo "*ERROR* docker-compose failed with error [$rv2]"
           fi
-          sleep 3
-          echo "$(docker container ls)"
           EOF
