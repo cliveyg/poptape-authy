@@ -27,7 +27,7 @@ from jsonschema.exceptions import ValidationError as JsonValidationError
 # this is a password checker from dropbox
 from zxcvbn import zxcvbn
 
-# reject any non-json requests
+# reject all non-json requests
 @bp.before_request
 def only_json():
     request_path = request.path
