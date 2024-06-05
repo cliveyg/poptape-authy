@@ -24,5 +24,9 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} "cd ${{ secrets.DO_REPO_PATH }} && git checkout main && git pull"
-          echo "Successfully pulled repo."
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} << EOF
+          cd ${{ secrets.DO_REPO_PATH }}
+          git checkout main
+          git pull
+          echo "Remote server successfully pulled repo."
+          EOF
