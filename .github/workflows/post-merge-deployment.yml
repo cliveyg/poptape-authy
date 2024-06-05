@@ -28,5 +28,9 @@ jobs:
           cd ${{ secrets.DO_REPO_PATH }}
           git checkout main
           git pull
-          echo "Remote server successfully pulled repo."
+          if [ $? -eq 0 ]; then
+            echo "Remote server successfully pulled repo."
+          else
+            echo "*ERROR* git pull failed"
+          fi
           EOF
