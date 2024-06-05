@@ -1,4 +1,5 @@
 # deploys to server via ssh after successful merge into main
+# and then attempts to perform docker compose up
 name: Post merge deployment
 on:
   pull_request:
@@ -28,10 +29,21 @@ jobs:
           cd ${{ secrets.DO_REPO_PATH }}
           git checkout main
           git pull
-          retval=$?
+          rv1=$?
           if [ $? -eq 0 ]; then
             echo "Remote server successfully pulled repo."
           else
-            echo "*ERROR* git pull failed with error [$retval]"
+            echo "*ERROR* git pull failed with error [$rv1]"
           fi
+          echo "Stopping docker containers"
+          docker-compose down --remove-orphans
+          echo "Starting docker containers"
+          docker-compose up -d --build --remove-orphans
+          rv2=$?
+          if [ $? -eq 0 ]; then
+            echo "docker compose up ran without errors"
+          else
+            echo "*ERROR* docker-compose failed with error [$rv2]"
+          fi
+          echo "$(docker container ls)"          
           EOF
