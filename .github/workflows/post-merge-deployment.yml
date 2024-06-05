@@ -40,6 +40,7 @@ jobs:
       - name: Run docker compose
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} << EOF
+          cd ${{ secrets.DO_REPO_PATH }}
           echo "Stopping docker containers"
           docker-compose down --remove-orphans
           echo "Starting docker containers"
