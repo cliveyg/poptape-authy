@@ -67,23 +67,23 @@ jobs:
           touch poptape_authy.log
           coverage run -m pytest -sv --cov=app app/tests
           
-  deploy:
-    name: Deploy code to server
-    needs: [unit-tests]
-    runs-on: ubuntu-latest
+  # deploy:
+    #name: Deploy code to server
+    #needs: [unit-tests]
+    #runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+    #steps:
+    #  - name: Checkout Repository
+    #    uses: actions/checkout@v4
 
-      - name: Configure SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.DO_GITHUB_USER_SSH_PRIVATE_KEY }}
+    #  - name: Configure SSH
+    #    uses: webfactory/ssh-agent@v0.9.0
+    #    with:
+    #      ssh-private-key: ${{ secrets.DO_GITHUB_USER_SSH_PRIVATE_KEY }}
 
-      - name: Git Pull
-        run: |
-          cd ${{ github.workspace }}
-          ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} "cd ${{ secrets.DO_REPO_PATH }} && git checkout main && git pull"
-          echo "Successfully pulled repo."
+    #  - name: Git Pull
+    #    run: |
+    #      cd ${{ github.workspace }}
+    #      ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
+    #      ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} "cd ${{ secrets.DO_REPO_PATH }} && git checkout main && git pull"
+    #      echo "Successfully pulled repo."
