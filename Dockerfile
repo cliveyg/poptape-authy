@@ -18,10 +18,10 @@ RUN apk add --no-cache bash gawk sed grep bc coreutils
 RUN apk --no-cache add libpq
 
 # this needs to match the directory/package name of the python app
-# TODO: Copy only specific needed files and folders across
 COPY . /authy
 WORKDIR /authy
 
+# remove unwanted files and folders
 RUN rm -rf vauthy
 RUN rm -rf migrations
 RUN rm -rf app/tests
@@ -31,7 +31,7 @@ RUN mkdir -p /authy/log
 RUN pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-# Make port 8001 and 6033 available to the world outside this container
+# Make port 8001 available to the world outside this container
 EXPOSE 8001
 
 # Define environment variables here
