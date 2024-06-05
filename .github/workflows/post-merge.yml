@@ -8,5 +8,17 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        echo The PR was merged
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DO_GITHUB_USER_SSH_PRIVATE_KEY }}
+
+      - name: Git Pull
+        run: |
+          cd ${{ github.workspace }}
+          ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} "cd ${{ secrets.DO_REPO_PATH }} && git checkout main && git pull"
+          echo "Successfully pulled repo."
