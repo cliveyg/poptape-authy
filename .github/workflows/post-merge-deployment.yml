@@ -21,7 +21,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DO_GITHUB_USER_SSH_PRIVATE_KEY }}
 
-      - name: Git Pull
+      - name: Git pull from github
         run: |
           cd ${{ github.workspace }}
           ssh-keyscan -t rsa ${{ secrets.SERVER_DOMAIN }} >> ~/.ssh/known_hosts
@@ -35,6 +35,11 @@ jobs:
           else
             echo "*ERROR* git pull failed with error [$rv1]"
           fi
+          exit
+          EOF
+      - name: Run docker compose
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_DOMAIN }} << EOF
           echo "Stopping docker containers"
           docker-compose down --remove-orphans
           echo "Starting docker containers"
@@ -45,5 +50,6 @@ jobs:
           else
             echo "*ERROR* docker-compose failed with error [$rv2]"
           fi
-          echo "$(docker container ls)"          
+          sleep 3
+          echo "$(docker container ls)"
           EOF
