@@ -43,3 +43,6 @@ app/*.pyc
 !app/schemas/role_schema.json
 !app/schemas/user_schema.json
 !manage.py
+!.github/workflows/codeql.yml
+!.github/workflows/unit-test.yml
+!.github/workflows/post-merge-deployment.yml
