@@ -35,7 +35,7 @@ def only_json():
         pass
     else:
         if not request.is_json:
-            return jsonify({ 'message': 'Input must be json'}), 400
+            return jsonify({'message': 'Input must be json'}), 400
 
 #-----------------------------------------------------------------------------#
 # wrapper function to check if token is supplied to routes
@@ -53,13 +53,13 @@ def token_required(f):
                 secure = True
 
         if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
-            return jsonify({ 'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
+            return jsonify({'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
 
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
 
         if not token:
-            return jsonify({ 'message': 'Token not supplied.'}), 401
+            return jsonify({'message': 'Token not supplied.'}), 401
           
         try:
             data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS512')
@@ -74,10 +74,10 @@ def token_required(f):
             current_user = result[0]
 
         except (SQLAlchemyError, jwt.InvalidTokenError, DBAPIError) as e:
-            return jsonify({ 'message': 'Invalid token.'}), 401
+            return jsonify({'message': 'Invalid token.'}), 401
 
         if not current_user:
-            return jsonify({ 'message': 'Invalid token.'}), 401
+            return jsonify({'message': 'Invalid token.'}), 401
 
         # deal with near expired token here
         #if near_expiry(data['exp']):
@@ -99,7 +99,7 @@ def require_access_level(access_level):
         def decorated(current_user, *args, **kwargs):
 
             if current_user.level > access_level:
-                return jsonify({ 'message': 'Severe tutting ensues.'}), 401 
+                return jsonify({'message': 'Severe tutting ensues.'}), 401 
 
             return f(current_user, *args, **kwargs)
 
@@ -126,12 +126,12 @@ def check_access_level(current_user, external_level):
         try:
             numeric_level = int(external_level)
         except:
-            return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
+            return jsonify({'message': 'Your name\'s not down, you\'re not coming in.'}), 401
 
         if current_user.level <= numeric_level: 
             return jsonify({ 'public_id': current_user.public_id }), 200
 
-    return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
+    return jsonify({'message': 'Your name\'s not down, you\'re not coming in.'}), 401
 
 #------------------------------------------------------------------------------#
 
@@ -141,9 +141,9 @@ def check_access_level(current_user, external_level):
 #def check_jwt_against_user_id(current_user, user_id):
 #
 #    if current_user.public_id == user_id:
-#        return jsonify({ 'message': 'On the guest list'}), 200
+#        return jsonify({'message': 'On the guest list'}), 200
 #
-#    return jsonify({ 'message': 'Your name\'s not down, you\'re not coming in.'}), 401
+#    return jsonify({'message': 'Your name\'s not down, you\'re not coming in.'}), 401
     
 
 # --------------------------------------------------------------------------- #
@@ -159,7 +159,7 @@ def login_user():
     try:
         login_data = request.get_json()
     except:
-        return jsonify({ 'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
+        return jsonify({'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
 
     secure = False
     if 'X-Forwarded-Proto' in request.headers:
@@ -168,23 +168,23 @@ def login_user():
             secure = True
 
     if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
-        return jsonify({ 'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
+        return jsonify({'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
     
     try:
         assert_valid_schema(login_data, 'login')
     except JsonValidationError as error:
         app.logger.debug("The error is [%s]", str(error))
-        return jsonify({ 'message': 'Check ya inputs mate'}), 400
+        return jsonify({'message': 'Check ya inputs mate'}), 400
 
     #TODO: refactor this - could do a lot of checks in the model query
     try:
         user = User.query.filter_by(username = login_data.get('username')).first()
     except: # pragma: no cover
-        return jsonify({ 'message': 'Could not verify user'}), 401 # pragma: no cover
+        return jsonify({'message': 'Could not verify user'}), 401 # pragma: no cover
 
     # can't let 'deleted' user login
     if not user or user.deleted == True or user.validated == False:
-        return jsonify({ 'message': 'Could not verify this user'}), 401
+        return jsonify({'message': 'Could not verify this user'}), 401
 
     # user exists so check password
     
@@ -206,9 +206,9 @@ def login_user():
         except Exception as error: # pragma: no cover
             app.logger.debug(error)
             db.session.rollback() # pragma: no cover
-            return jsonify({ 'message': 'Oopsy something went wrong, try again' }), 500 # pragma: no cover
+            return jsonify({'message': 'Oopsy something went wrong, try again'}), 500 # pragma: no cover
 
-    return jsonify({ 'message': 'Could not verify user identity'}), 401
+    return jsonify({'message': 'Could not verify user identity'}), 401
 
 
 # ---------------------------------------------------------------------------- #
@@ -222,7 +222,7 @@ def get_current_user_details(current_user):
     user = User.query.filter_by(public_id = current_user.public_id).first()
     
     if not user:
-        return jsonify({ 'message': 'hmmm, you\'re not in our records' }), 404
+        return jsonify({'message': 'hmmm, you\'re not in our records' }), 404
 
     user_data = {}
     user_data['public_id'] = user.public_id
@@ -252,10 +252,10 @@ def get_all_users(current_user):
 
     except Exception as error:
         app.logger.debug(error)
-        return jsonify({ 'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
+        return jsonify({'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
 
     if len(users) == 0:
-        return jsonify({ 'message': 'no users found in system!' }), 404
+        return jsonify({'message': 'no users found in system!' }), 404
 
     paged_users = []
     for user in users:
@@ -295,7 +295,7 @@ def get_one_user(current_user, public_id):
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user or user.deleted:
-        return jsonify({ 'message': 'User not found for id ['+public_id+']' }), 404
+        return jsonify({'message': 'User not found for id ['+public_id+']' }), 404
 
     user_data = {}
     user_data['username'] = user.username
@@ -320,12 +320,12 @@ def get_username(public_id):
     try:
         val = uuid.UUID(public_id, version=4)
     except ValueError:
-        return jsonify({ 'message': 'Invalid UUID'}), 400
+        return jsonify({'message': 'Invalid UUID'}), 400
 
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user or user.deleted:
-        return jsonify({ 'message': 'User not found for id ['+public_id+']' }), 404
+        return jsonify({'message': 'User not found for id ['+public_id+']' }), 404
 
     user_data = {}
     user_data['username'] = user.username
@@ -340,12 +340,12 @@ def get_username(public_id):
 def get_public_id_from_username(username):
 
     if len(username) > 50: 
-        return jsonify({ 'message': 'Invalid username'}), 400
+        return jsonify({'message': 'Invalid username'}), 400
 
     user = User.query.filter_by(username=username).first()
 
     if not user or user.deleted:
-        return jsonify({ 'message': 'User not found for username' }), 404
+        return jsonify({'message': 'User not found for username' }), 404
 
     user_data = {}
     user_data['public_id'] = user.public_id
@@ -364,7 +364,7 @@ def validate_user(validation_string):
     user = User.query.filter_by(validation_string=validation_string).first()
 
     if not user or user.deleted:
-        return jsonify({ 'message': 'User not found' }), 404    
+        return jsonify({'message': 'User not found' }), 404    
 
     try:
         user.validated = True
@@ -373,9 +373,9 @@ def validate_user(validation_string):
     except (SQLAlchemyError, DBAPIError) as e:
         app.logger.error(e)
         db.session.rollback()
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500    
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500    
 
-    return jsonify({ 'message': 'User validated' }), 200
+    return jsonify({'message': 'User validated' }), 200
 
 # ---------------------------------------------------------------------------- #
 
@@ -391,7 +391,7 @@ def create_user():
     try:
         data = request.get_json()
     except:
-        return jsonify({ 'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
+        return jsonify({'message': 'Check ya inputs mate. Yer not valid, Jason'}), 400
 
     try:
         assert_valid_schema(data, 'create_user')
@@ -400,15 +400,15 @@ def create_user():
         if "does not match '[A-Z" in mess:
             mess = "Email address is not valid"
 
-        return jsonify({ 'message': 'Check ya inputs mate.', 'error': mess }), 400
+        return jsonify({'message': 'Check ya inputs mate.', 'error': mess }), 400
 
     # want to restrict certain usernames - get list from env
     if data['username'].lower() in app.config['RESTRICTED_USERNAMES']:
         error_message = 'Your username and/or email is already registered with us'
-        return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
+        return jsonify({'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
 
     if data['password'] != data['confirm_password']:
-        return jsonify({ 'message': 'Passwords don\'t match'}), 400
+        return jsonify({'message': 'Passwords don\'t match'}), 400
 
     # password strength checking - not sure what value to accept
     results = zxcvbn(data['password'], user_inputs=[data['email'], data['username']])
@@ -454,10 +454,10 @@ def create_user():
         app.logger.error(str(e))
         if "duplicate" in str(e):
             error_message = 'Your username and/or email is already registered with us'
-            return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
+            return jsonify({'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
         else:
             error_message = 'We were unable to create your user profile'
-            return jsonify({ 'message': 'Oopsy, something went wrong.' , 'error': error_message }), 500
+            return jsonify({'message': 'Oopsy, something went wrong.' , 'error': error_message }), 500
 
     # assign 'user' role to new user
     role = Role.query.filter_by(name="user").first()
@@ -471,7 +471,7 @@ def create_user():
         app.logger.error(str(e))
         db.session.rollback() # pragma: no cover
 
-        return jsonify({ 'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
+        return jsonify({'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
 
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
@@ -480,10 +480,10 @@ def create_user():
                          algorithm='HS512')
 
     if call_aws(token, new_user.public_id):
-        return jsonify({ 'message': 'Success! User ['+data['username']+'] created.',
+        return jsonify({'message': 'Success! User ['+data['username']+'] created.',
                          'token': token }), 201
     db.session.rollback() 
-    return jsonify({ 'message': 'Oopsy, something went a bit wronger.'}), 500
+    return jsonify({'message': 'Oopsy, something went a bit wronger.'}), 500
 
 
 #------------------------------------------------------------------------------#
@@ -498,9 +498,9 @@ def edit_user(current_user, public_id):
     #user = User.query.filter_by(public_id=public_id).first()
 
     #if not user:
-    #    return jsonify({ 'message': 'User not found for id ['+public_id+']' }), 404
+    #    return jsonify({'message': 'User not found for id ['+public_id+']' }), 404
 
-    return jsonify({ 'message': 'Like those Levis' }), 501
+    return jsonify({'message': 'Like those Levis' }), 501
 
 #------------------------------------------------------------------------------#
 
@@ -515,12 +515,12 @@ def admin_delete_user(current_user, public_id):
     datetime_string = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
     if not user:
-        return jsonify({ 'message': 'User not found for id ['+public_id+']' }), 404
+        return jsonify({'message': 'User not found for id ['+public_id+']' }), 404
 
     # if user exists but the delete flag is set ie; previously deleted then return a 410 no content
     #TODO: Maybe switch this to a 404?
     if user.deleted == True:
-        return jsonify({ 'message': 'User ['+public_id+'] previously deleted' }), 410
+        return jsonify({'message': 'User ['+public_id+'] previously deleted' }), 410
 
     try:
         #db.session.delete(user)
@@ -529,9 +529,9 @@ def admin_delete_user(current_user, public_id):
         db.session.commit()
     except (SQLAlchemyError, DBAPIError) as e:
         db.session.rollback()
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500
 
-    return jsonify({ 'message': 'Success! User ['+user.username+'] deleted.'}), 204
+    return jsonify({'message': 'Success! User ['+user.username+'] deleted.'}), 204
 
 #------------------------------------------------------------------------------#
 
@@ -551,9 +551,9 @@ def delete_user(current_user):
         db.session.commit()
     except (SQLAlchemyError, DBAPIError) as e:
         db.session.rollback()
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500
 
-    return jsonify({ 'message': 'Success! User ['+user.username+'] deleted.'}), 204
+    return jsonify({'message': 'Success! User ['+user.username+'] deleted.'}), 204
 
 
 #------------------------------------------------------------------------------#
@@ -566,7 +566,7 @@ def get_user_roles(current_user,public_id):
     results = db.session.query(User.username,Role.name,Role.level).filter(User.id == UserRole.user_id).filter(UserRole.role_id == Role.id).filter(User.public_id == public_id).all()
 
     if not results:
-        return jsonify({ 'message': 'User and roles not found for id ['+public_id+']' }), 404
+        return jsonify({'message': 'User and roles not found for id ['+public_id+']' }), 404
 
     output = []
     username = ''
@@ -620,7 +620,7 @@ def show_all_users_for_role(current_user, role_name):
     role = Role.query.filter_by(name=decoded_name).first()
 
     if not role:
-        return jsonify({ 'message': 'Role not found.' }), 404
+        return jsonify({'message': 'Role not found.' }), 404
 
     role_data = {}
     role_data['level'] = role.level
@@ -652,7 +652,7 @@ def get_one_role(current_user, role_name):
     role = Role.query.filter_by(name=decoded_name).first()
 
     if not role:
-        return jsonify({ 'message': 'Role not found.' }), 404
+        return jsonify({'message': 'Role not found.' }), 404
 
     role_data = {}
     role_data['level'] = role.level
@@ -673,13 +673,13 @@ def assign_role_to_user(current_user, role_name, public_id):
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({ 'message': 'User not found'}), 404
+        return jsonify({'message': 'User not found'}), 404
 
     decoded_name = unquote(role_name)
     role = Role.query.filter_by(name=decoded_name).first()
 
     if not role:
-        return jsonify({ 'message': 'Role not found.' }), 404
+        return jsonify({'message': 'Role not found.' }), 404
 
     user_role = UserRole(user_id = user.id,
                          role_id = role.id)
@@ -690,11 +690,11 @@ def assign_role_to_user(current_user, role_name, public_id):
         db.session.rollback()
         app.logger.debug(str(e))
         if "duplicate" in str(e):
-            return jsonify({ 'message': 'User already assigned to role.'}), 400
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500
+            return jsonify({'message': 'User already assigned to role.'}), 400
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500
 
     mess = 'Role ['+decoded_name+'] assigned to user ['+user.username+'] successfully.'
-    return jsonify({ 'message': mess }), 200
+    return jsonify({'message': mess }), 200
 
 
 #------------------------------------------------------------------------------#
@@ -707,28 +707,28 @@ def remove_user_from_role(current_user, role_name, public_id):
     user = User.query.filter_by(public_id=public_id).first()
 
     if not user:
-        return jsonify({ 'message': 'User not found'}), 404
+        return jsonify({'message': 'User not found'}), 404
 
     decoded_name = unquote(role_name)
     role = Role.query.filter_by(name=decoded_name).first()
 
     if not role:
-        return jsonify({ 'message': 'Role not found.' }), 404
+        return jsonify({'message': 'Role not found.' }), 404
 
     user_role = UserRole.query.filter(and_(UserRole.role_id==role.id, UserRole.user_id==user.id)).first()
 
     if not user_role:
-        return jsonify({ 'message': 'User not found with that role.' }), 404
+        return jsonify({'message': 'User not found with that role.' }), 404
 
     try:
         db.session.delete(user_role)
         db.session.commit()
     except (SQLAlchemyError, DBAPIError) as e:
         db.session.rollback()
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500
 
     mess = 'User ['+user.username+'] removed from role ['+role_name+'] successfully.'
-    return jsonify({ 'message': mess }), 200
+    return jsonify({'message': mess }), 200
 
 
 #------------------------------------------------------------------------------#
@@ -741,12 +741,12 @@ def create_role(current_user):
     try:
         data = request.get_json()
     except:
-        return jsonify({ 'message': 'Yer very bad, Jason' }), 400
+        return jsonify({'message': 'Yer very bad, Jason' }), 400
 
     try:
         assert_valid_schema(data, 'role')
     except JsonValidationError as err:
-        return jsonify({ 'message': 'Check ya inputs mate.', 'error': err.message }), 400
+        return jsonify({'message': 'Check ya inputs mate.', 'error': err.message }), 400
 
     new_role = Role(name = data['name'],
                     description = data['description'],
@@ -759,10 +759,10 @@ def create_role(current_user):
         db.session.rollback()
         app.logger.debug(str(e))
         if "duplicate" in str(e):
-            return jsonify({ 'message': 'Role already exists'}), 400
-        return jsonify({ 'message': 'Oopsy, something went wrong.'}), 500
+            return jsonify({'message': 'Role already exists'}), 400
+        return jsonify({'message': 'Oopsy, something went wrong.'}), 500
 
-    return jsonify({ 'message': 'Success! Role ['+data['name']+'] created.'}), 201
+    return jsonify({'message': 'Success! Role ['+data['name']+'] created.'}), 201
 
 
 #-----------------------------------------------------------------------------#
@@ -790,14 +790,14 @@ def sitemap():
 @bp.route('/authy/status', methods=['GET'])
 def system_running():
 
-    return jsonify({ 'message': 'System running...' })
+    return jsonify({'message': 'System running...' })
 
 # -----------------------------------------------------------------------------
 # route for testing rate limit works - generates 429 
 @bp.route('/authy/ratelimited', methods=['GET'])
 @limiter.limit("0/minute")
 def rate_limted(current_user):
-    return jsonify({ 'message': 'should never see this' }), 200
+    return jsonify({'message': 'should never see this' }), 200
 
 
 # -----------------------------------------------------------------------------
