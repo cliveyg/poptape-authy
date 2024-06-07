@@ -536,10 +536,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
-        create_user = { 'username': 'user1',
-                        'password': 'hgfkwyg322dd',
-                        'confirm_password': 'hgfkwyg322dd',
-                        'email': 'user1@email.com' }
+        create_user = {'username': 'user1',
+                       'password': 'hgfkwyg322dd',
+                       'confirm_password': 'hgfkwyg322dd',
+                       'email': 'user1@email.com'}
         response = self.client.post('/authy/user',
                                     json=create_user,
                                     headers=headers)
