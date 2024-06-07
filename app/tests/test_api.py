@@ -9,7 +9,7 @@ from app import create_app, db
 from app.models import User, Role, UserRole
 from app.config import TestConfig
 from .fixtures import addNormalUsers, addAdminUsers, headers_with_token
-from .fixtures import login_body, make_datetime_string
+from .fixtures import login_body, make_datetime_string, headers_with_token_and_https
 
 from flask import current_app 
 from flask_testing import TestCase as FlaskTestCase
