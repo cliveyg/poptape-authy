@@ -545,6 +545,23 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     @mock.patch('requests.post', side_effect=mocked_requests_post)
+    def test_create_user_fail_restricted_name(self, mock_post):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        create_user = {'username': 'admin',
+                       'password': 'hgfkwyg322dd',
+                       'confirm_password': 'hgfkwyg322dd',
+                       'email': 'user1@email.com'}
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 409)
+
+    # -----------------------------------------------------------------------------
+
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_create_user_fail_bad_json(self, mock_post):
 
         users = addNormalUsers()
@@ -556,6 +573,8 @@ class MyTest(FlaskTestCase):
         self.assertEqual(response.status_code, 400)
 
     # -----------------------------------------------------------------------------
+
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_create_user_fail_json_not_match_schema(self, mock_post):
 
         users = addNormalUsers()
