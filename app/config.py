@@ -25,5 +25,3 @@ class TestConfig(Config):
     USERS_LIMIT_PER_PAGE = "3"
     BASE_URLS = os.getenv('TEST_BASE_URLS')
 
-def byebye():
-    sys.exit('missing config data from .env file')

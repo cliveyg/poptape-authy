@@ -32,7 +32,16 @@ def headers_with_token(token):
 
     headers = { 'Content-type': 'application/json',
                 'x-access-token': token }
-    return headers    
+    return headers
+
+# -----------------------------------------------------------------------------
+
+def headers_with_token_and_https(token):
+
+    headers = { 'Content-type': 'application/json',
+                'X-Forwarded-Proto': 'https',
+                'x-access-token': token }
+    return headers
 
 # -----------------------------------------------------------------------------
 

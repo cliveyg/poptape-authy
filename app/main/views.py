@@ -7,16 +7,16 @@ from flask import current_app as app
 
 from flask import jsonify, request, make_response, abort, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 from functools import wraps
 
 import uuid
 import jwt
 import datetime
 import time
-import pprint
-import json
-import logging
+# import pprint
+# import json
+# import logging
 
 from urllib.parse import unquote
 from sqlalchemy.exc import SQLAlchemyError, DBAPIError
@@ -210,9 +210,7 @@ def login_user():
 
     return jsonify({'message': 'Could not verify user identity'}), 401
 
-
 # ---------------------------------------------------------------------------- #
-
 
 @bp.route('/authy/user', methods=['GET'])
 @token_required
@@ -254,9 +252,6 @@ def get_all_users(current_user):
         app.logger.debug(error)
         return jsonify({'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
 
-    if len(users) == 0:
-        return jsonify({'message': 'no users found in system!' }), 404
-
     paged_users = []
     for user in users:
         user_data = {}
@@ -285,7 +280,6 @@ def get_all_users(current_user):
     return jsonify(output), 200
 
 # ---------------------------------------------------------------------------- #
-
 
 @bp.route('/authy/user/<public_id>', methods=['GET'])
 @token_required
@@ -318,7 +312,8 @@ def get_one_user(current_user, public_id):
 def get_username(public_id):
 
     try:
-        val = uuid.UUID(public_id, version=4)
+        val = public_id[0:36]
+        uuid.UUID(val, version=4)
     except ValueError:
         return jsonify({'message': 'Invalid UUID'}), 400
 
@@ -339,7 +334,10 @@ def get_username(public_id):
 #@require_access_level(99)
 def get_public_id_from_username(username):
 
-    if len(username) > 50: 
+    try:
+        if len(username) > 50:
+            return jsonify({'message': 'Supplied username too long'}), 400
+    except Exception:
         return jsonify({'message': 'Invalid username'}), 400
 
     user = User.query.filter_by(username=username).first()
@@ -523,7 +521,6 @@ def admin_delete_user(current_user, public_id):
         return jsonify({'message': 'User ['+public_id+'] previously deleted' }), 410
 
     try:
-        #db.session.delete(user)
         user.deleted = True
         user.delete_date = datetime_string
         db.session.commit()
@@ -562,6 +559,12 @@ def delete_user(current_user):
 @token_required
 @require_access_level(5)
 def get_user_roles(current_user,public_id):
+
+    try:
+        val = public_id[0:36]
+        uuid.UUID(val, version=4)
+    except ValueError:
+        return jsonify({'message': 'Invalid UUID'}), 400
 
     results = db.session.query(User.username,Role.name,Role.level).filter(User.id == UserRole.user_id).filter(UserRole.role_id == Role.id).filter(User.public_id == public_id).all()
 
@@ -738,10 +741,7 @@ def remove_user_from_role(current_user, role_name, public_id):
 @require_access_level(5)
 def create_role(current_user):
 
-    try:
-        data = request.get_json()
-    except:
-        return jsonify({'message': 'Yer very bad, Jason' }), 400
+    data = request.get_json()
 
     try:
         assert_valid_schema(data, 'role')
