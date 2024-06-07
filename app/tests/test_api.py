@@ -556,7 +556,22 @@ class MyTest(FlaskTestCase):
         self.assertEqual(response.status_code, 400)
 
     # -----------------------------------------------------------------------------
+    def test_create_user_fail_json_not_match_schema(self, mock_post):
 
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        create_user = {'username': 'user1',
+                       'password': 'hgfkwyg322dd',
+                       'confirm_password': 'hgfkwyg322dd',
+                       'blah': 'yarp',
+                       'email': 'user1@email.com'}
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 400)
+
+    # -----------------------------------------------------------------------------
     def test_create_user_fail_due_to_weak_password(self):
 
         users = addNormalUsers()
