@@ -730,7 +730,7 @@ class MyTest(FlaskTestCase):
                                     headers=headers)
         data = response.json
         self.assertEqual(response.status_code, 200)
-        url = '/authy/user'+users[0].public_id
+        url = '/authy/user/'+users[0].public_id
         response2 = self.client.delete(url,
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 204)
