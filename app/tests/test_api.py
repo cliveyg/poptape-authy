@@ -1391,7 +1391,7 @@ class MyTest(FlaskTestCase):
                                     headers=headers)
         data = response.json
         self.assertEqual(response.status_code, 200)
-        url = '/authy/user'+str(uuid.uuid4())
+        url = '/authy/user/'+str(uuid.uuid4())
         response2 = self.client.get(url,
                                      headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 404)
