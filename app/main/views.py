@@ -210,9 +210,7 @@ def login_user():
 
     return jsonify({'message': 'Could not verify user identity'}), 401
 
-
 # ---------------------------------------------------------------------------- #
-
 
 @bp.route('/authy/user', methods=['GET'])
 @token_required
@@ -254,9 +252,6 @@ def get_all_users(current_user):
         app.logger.debug(error)
         return jsonify({'message': 'oopsy, sorry we couldn\'t complete your request' }), 500
 
-    if len(users) == 0:
-        return jsonify({'message': 'no users found in system!' }), 404
-
     paged_users = []
     for user in users:
         user_data = {}
@@ -285,7 +280,6 @@ def get_all_users(current_user):
     return jsonify(output), 200
 
 # ---------------------------------------------------------------------------- #
-
 
 @bp.route('/authy/user/<public_id>', methods=['GET'])
 @token_required
