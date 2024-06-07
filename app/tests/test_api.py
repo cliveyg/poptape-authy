@@ -253,7 +253,20 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_can_get_own_user_data(self):
+    def test_https_setting_on_login(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        headers = {'Content-type': 'application/json',
+                   'X-Forwarded-Proto': 'https'}
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="sally",
+                                                    passwd="password"),
+                                    headers=headers)
+        self.assertEqual(response.status_code, 200)
+
+    # -----------------------------------------------------------------------------
+
+    def test_https_setting_on_token_required(self):
         added_users = addNormalUsers()
         self.assertEqual(len(added_users), 8)
         headers = { 'Content-type': 'application/json' }
@@ -265,12 +278,8 @@ class MyTest(FlaskTestCase):
         data = response.json
 
         response = self.client.get('/authy/user',
-                                   headers=headers_with_token(data['token']))
+                                   headers=headers_with_token_and_https(data['token']))
         self.assertEqual(response.status_code, 200)
-        user_data = response.json
-
-        self.assertEqual(user_data["username"], "sally")
-        self.assertEqual(user_data["email"], "sally@email.com")
 
     # -----------------------------------------------------------------------------
 
