@@ -718,7 +718,7 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
-    def test_delete_user_fail_already_deleted(self):
+    def test_admin_delete_user_fail_already_deleted(self):
 
         users = addNormalUsers()
         addAdminUsers()
@@ -735,7 +735,7 @@ class MyTest(FlaskTestCase):
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 204)
         # try and delete again
-        url = '/authy/user'+users[0].public_id
+        url = '/authy/user/'+users[0].public_id
         response3 = self.client.delete(url,
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response3.status_code, 410)
