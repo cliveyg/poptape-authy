@@ -783,7 +783,7 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = {'Content-type': 'application/json'}
-        url = '/authy/fetch/'+users[0].public_id
+        url = '/authy/fetch/'+users[0].username
         response = self.client.get(url,
                                    headers=headers)
         returned_data = response.json
