@@ -728,6 +728,33 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
+    def test_get_username_from_public_id(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/username/'+users[0].public_id
+        response = self.client.get(url,
+                                   headers=headers)
+        data = response.json
+        username = data.get("username")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(users[0].username, username)
+
+    # -----------------------------------------------------------------------------
+
+    def test_username_not_found_from_uuid(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/username/'+str(uuid.uuid4())
+        response = self.client.get(url,
+                                   headers=headers)
+        self.assertEqual(response.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
     def test_admin_return_role_details(self):
 
         users = addNormalUsers()
