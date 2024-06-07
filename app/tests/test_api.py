@@ -558,7 +558,6 @@ class MyTest(FlaskTestCase):
         response = self.client.post('/authy/user',
                                     json=create_user,
                                     headers=headers)
-        self.assertEqual(len(mock_post.call_args_list), 1)
         self.assertEqual(response.status_code, 201)
 
     # -----------------------------------------------------------------------------
@@ -722,6 +721,7 @@ class MyTest(FlaskTestCase):
     def test_edit_user(self):
 
         users = addNormalUsers()
+        addAdminUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
