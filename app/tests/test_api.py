@@ -1303,6 +1303,24 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
+    def test_admin_create_role_bad_json(self):
+        users = addNormalUsers()
+        admins = addAdminUsers()
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role'
+        response2 = self.client.post(url,
+                                     json='yarp',
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 400)
+
+    # -----------------------------------------------------------------------------
+
     def test_normal_user_create_role_fail(self):
         users = addNormalUsers()
         admins = addAdminUsers()
