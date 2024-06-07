@@ -739,7 +739,46 @@ class MyTest(FlaskTestCase):
         response3 = self.client.delete(url,
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response3.status_code, 410)
-        # -----------------------------------------------------------------------------
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_get_roles_for_bad_public_id(self):
+
+        users = addNormalUsers()
+        addAdminUsers()
+        self.assertEqual(len(users), 8)
+        headers = {'Content-type': 'application/json'}
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="bobby",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/user/hksfirkykifhdawkdfaw/role'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 400)
+
+    # -----------------------------------------------------------------------------
+
+    def test_admin_get_roles_for_non_existent_user(self):
+
+        users = addNormalUsers()
+        addAdminUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="bobby",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/user/'+str(uuid.uuid4())+'/role'
+        response2 = self.client.get(url,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 404)
+
+    # -----------------------------------------------------------------------------
 
     def test_edit_user(self):
 

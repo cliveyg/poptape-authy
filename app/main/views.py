@@ -566,6 +566,12 @@ def delete_user(current_user):
 @require_access_level(5)
 def get_user_roles(current_user,public_id):
 
+    try:
+        val = public_id[0:36]
+        uuid.UUID(val, version=4)
+    except ValueError:
+        return jsonify({'message': 'Invalid UUID'}), 400
+
     results = db.session.query(User.username,Role.name,Role.level).filter(User.id == UserRole.user_id).filter(UserRole.role_id == Role.id).filter(User.public_id == public_id).all()
 
     if not results:
