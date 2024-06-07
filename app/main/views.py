@@ -527,7 +527,6 @@ def admin_delete_user(current_user, public_id):
         return jsonify({'message': 'User ['+public_id+'] previously deleted' }), 410
 
     try:
-        #db.session.delete(user)
         user.deleted = True
         user.delete_date = datetime_string
         db.session.commit()
