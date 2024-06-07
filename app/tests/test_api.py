@@ -1359,6 +1359,28 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
+    def test_admin_create_role_fail_on_schema(self):
+        users = addNormalUsers()
+        admins = addAdminUsers()
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="clivey",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        url = '/authy/role'
+        new_role = { 'name': 'megaguest',
+                     'bad': 'juju',
+                     'description': 'A description',
+                     'level': 15 }
+        response2 = self.client.post(url,
+                                     json=new_role,
+                                     headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 400)
+
+    # -----------------------------------------------------------------------------
+
     def test_admin_create_role_fail_description_too_long(self):
         users = addNormalUsers()
         admins = addAdminUsers()

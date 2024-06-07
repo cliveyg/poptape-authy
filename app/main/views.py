@@ -747,10 +747,7 @@ def remove_user_from_role(current_user, role_name, public_id):
 @require_access_level(5)
 def create_role(current_user):
 
-    try:
-        data = request.get_json()
-    except:
-        return jsonify({'message': 'Yer very bad, Jason' }), 400
+    data = request.get_json()
 
     try:
         assert_valid_schema(data, 'role')
