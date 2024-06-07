@@ -7,16 +7,16 @@ from flask import current_app as app
 
 from flask import jsonify, request, make_response, abort, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 from functools import wraps
 
 import uuid
 import jwt
 import datetime
 import time
-import pprint
-import json
-import logging
+# import pprint
+# import json
+# import logging
 
 from urllib.parse import unquote
 from sqlalchemy.exc import SQLAlchemyError, DBAPIError

@@ -545,6 +545,25 @@ class MyTest(FlaskTestCase):
     # -----------------------------------------------------------------------------
 
     @mock.patch('requests.post', side_effect=mocked_requests_post)
+    def test_create_user_ok_passfail(self, mock_post):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        create_user = {'username': 'user1',
+                       'password': 'password',
+                       'confirm_password': 'password',
+                       'passfail': "true",
+                       'email': 'user1@email.com'}
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(len(mock_post.call_args_list), 1)
+        self.assertEqual(response.status_code, 201)
+
+    # -----------------------------------------------------------------------------
+
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_create_user_fail_restricted_name(self, mock_post):
 
         users = addNormalUsers()
@@ -697,6 +716,25 @@ class MyTest(FlaskTestCase):
         response2 = self.client.delete('/authy/user',
                                        headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 204)
+
+    # -----------------------------------------------------------------------------
+
+    def test_edit_user(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        response = self.client.post('/authy/login',
+                                    json=login_body(name="woody",
+                                                    passwd="password"),
+                                    headers=headers)
+        data = response.json
+        self.assertEqual(response.status_code, 200)
+        edit_user = {'email': 'woody2@email.com'}
+        response2 = self.client.put('/authy/user',
+                                    json=edit_user,
+                                    headers=headers_with_token(data['token']))
+        self.assertEqual(response2.status_code, 501)
 
     # -----------------------------------------------------------------------------
 
