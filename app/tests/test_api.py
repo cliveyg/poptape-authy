@@ -759,19 +759,19 @@ class MyTest(FlaskTestCase):
 
         # try too long string
         headers = {'Content-type': 'application/json'}
-        url = '/authy/username/1234567890123456789012345678901234567890
+        url = '/authy/username/1234567890123456789012345678901234567890'
         response = self.client.get(url,
                                    headers=headers)
         self.assertEqual(response.status_code, 400)
 
         # try too short
-        url = '/authy/username/12345678901234567890
+        url = '/authy/username/12345678901234567890'
         response = self.client.get(url,
                                headers=headers)
         self.assertEqual(response.status_code, 400)
 
         # try right length but invalid
-        url = '/authy/username/9b4bd53d-0b50-4847-95i9-696f31508694
+        url = '/authy/username/9b4bd53d-0b50-4847-95i9-696f31508694'
         response = self.client.get(url,
                                    headers=headers)
         self.assertEqual(response.status_code, 400)
