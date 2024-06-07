@@ -340,7 +340,10 @@ def get_username(public_id):
 #@require_access_level(99)
 def get_public_id_from_username(username):
 
-    if len(username) > 50: 
+    try:
+        if len(username) > 50:
+            return jsonify({'message': 'Supplied username too long'}), 400
+    except Exception:
         return jsonify({'message': 'Invalid username'}), 400
 
     user = User.query.filter_by(username=username).first()

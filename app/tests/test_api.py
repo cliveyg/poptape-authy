@@ -776,7 +776,43 @@ class MyTest(FlaskTestCase):
                                    headers=headers)
         self.assertEqual(response.status_code, 400)
 
-        # -----------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
+
+    def test_get_public_id_from_username(self):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/fetch/'+users[0].public_id
+        response = self.client.get(url,
+                                   headers=headers)
+        returned_data = response.json
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(users[0].public_id, returned_data.get("public_id"))
+
+    # -----------------------------------------------------------------------------
+
+    def test_return_404_get_public_id_from_username(self):
+
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/fetch/someuserthatdoesnotexist'
+        response = self.client.get(url,
+                                   headers=headers)
+        self.assertEqual(response.status_code, 404)
+
+    # -----------------------------------------------------------------------------
+
+    def test_return_400_get_public_id_from_username(self):
+
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/fetch/012345678901234567890123456789012345678901234567890123456789'
+        response = self.client.get(url,
+                                   headers=headers)
+        returned_data = response.json
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(returned_data.get("message"), "Supplied username too long")
+
+    # -----------------------------------------------------------------------------
 
     def test_admin_return_role_details(self):
 
