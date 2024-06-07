@@ -755,6 +755,29 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
+    def test_invalid_uuid_in_get_username_from_public_id(self):
+
+        # try too long string
+        headers = {'Content-type': 'application/json'}
+        url = '/authy/username/1234567890123456789012345678901234567890
+        response = self.client.get(url,
+                                   headers=headers)
+        self.assertEqual(response.status_code, 400)
+
+        # try too short
+        url = '/authy/username/12345678901234567890
+        response = self.client.get(url,
+                               headers=headers)
+        self.assertEqual(response.status_code, 400)
+
+        # try right length but invalid
+        url = '/authy/username/9b4bd53d-0b50-4847-95i9-696f31508694
+        response = self.client.get(url,
+                                   headers=headers)
+        self.assertEqual(response.status_code, 400)
+
+        # -----------------------------------------------------------------------------
+
     def test_admin_return_role_details(self):
 
         users = addNormalUsers()

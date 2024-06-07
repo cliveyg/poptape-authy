@@ -318,7 +318,8 @@ def get_one_user(current_user, public_id):
 def get_username(public_id):
 
     try:
-        val = uuid.UUID(public_id, version=4)
+        val = public_id[0:36]
+        uuid.UUID(val, version=4)
     except ValueError:
         return jsonify({'message': 'Invalid UUID'}), 400
 
