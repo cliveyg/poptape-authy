@@ -66,4 +66,4 @@ jobs:
         run: |
           touch poptape_authy.log
           coverage run -m pytest -sv --cov=app app/tests
-          coverage report --show-missing | cat
+          coverage report --term-missing | cat
