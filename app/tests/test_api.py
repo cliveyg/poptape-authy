@@ -553,7 +553,7 @@ class MyTest(FlaskTestCase):
         create_user = {'username': 'user1',
                        'password': 'password',
                        'confirm_password': 'password',
-                       'passfail': "true",
+                       'passfail': 1,
                        'email': 'user1@email.com'}
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -725,13 +725,14 @@ class MyTest(FlaskTestCase):
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
-                                    json=login_body(name="woody",
+                                    json=login_body(name="bobby",
                                                     passwd="password"),
                                     headers=headers)
         data = response.json
         self.assertEqual(response.status_code, 200)
         edit_user = {'email': 'woody2@email.com'}
-        response2 = self.client.put('/authy/user',
+        url = '/authy/user/'+users[0].public_id
+        response2 = self.client.put(url,
                                     json=edit_user,
                                     headers=headers_with_token(data['token']))
         self.assertEqual(response2.status_code, 501)
