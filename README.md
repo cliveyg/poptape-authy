@@ -1,3 +1,4 @@
+![All unit tests pass](https://github.com/cliveyg/poptape-authy/actions/workflows/unit-test.yml/badge.svg) ![Successfully deployed](https://github.com/cliveyg/poptape-authy/actions/workflows/post-merge-deployment.yml/badge.svg)
 # poptape-auth
 
 A Flask Python based microservice to authenticate and authorize. Uses Postgres as the database. This is a Json based REST API that provides authentication and authorization via JWT. All endpoints that require authorization to use must have a JWT token in the HTTP header 'x-access-token'. I'm probably going to change this for production as the microservices will sit behind an API server and the system will use public/private keys for encoding the JWT and won't need to call authorization on every call. This will reduce network traffic a lot.
