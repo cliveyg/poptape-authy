@@ -65,7 +65,14 @@ jobs:
       - name: Test with pytest
         run: |
           touch poptape_authy.log
-          coverage run -m --omit="*/test*" pytest -v
+          coverage run -m --omit="*/test*" pytest -v --junitxml=junit.xml --html=report.html
+          coverage xml          
           echo "$(coverage report -m )"
           covRes="$(coverage report -m --fail-under=94)"
           echo "$covRes"
+
+      - name: Create coverage badges
+        uses: gaelgirodon/ci-badges-action@v1
+        with:
+          gist-id: 01d4e7e6c85224fa06e86e36359f93af
+          token: ${{ secrets.GIST_TOKEN }}
