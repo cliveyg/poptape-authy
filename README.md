@@ -1,4 +1,4 @@
-# poptape-auth
+# poptape-authy
 ![All unit tests pass](https://github.com/cliveyg/poptape-authy/actions/workflows/unit-test.yml/badge.svg) ![Successfully deployed](https://github.com/cliveyg/poptape-authy/actions/workflows/post-merge-deployment.yml/badge.svg) ![Tests passed](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-junit-tests.json&label=Tests) ![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-cobertura-coverage.json&label=Test%20Coverage)
 
 
