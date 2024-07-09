@@ -58,6 +58,7 @@ class MyTest(FlaskTestCase):
         response = self.client.get('/authy/status', headers=headers)
         self.app.logger.error("WOOOOOO")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(1, 0)
 
 # -----------------------------------------------------------------------------
 
