@@ -5,7 +5,7 @@ from app.main import bp
 from app.services import call_aws
 from flask import current_app as app
 
-from flask import jsonify, request, make_response, abort, url_for
+from flask import jsonify, request, abort, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 # from cryptography.fernet import Fernet
 from functools import wraps
@@ -202,6 +202,7 @@ def login_user():
         try:
             db.session.commit()
             # return the token to client
+            # return make_response({'token': token}, 200, {'Access-Control-Allow-Origin': '*'})
             return jsonify({ 'token': token })
         except Exception as error: # pragma: no cover
             app.logger.debug(error)
@@ -791,6 +792,7 @@ def sitemap():
 def system_running():
 
     return jsonify({'message': 'System running...' })
+    # return make_response({'message': 'System running...'}, 200, {'Access-Control-Allow-Origin': '*'})
 
 # -----------------------------------------------------------------------------
 # route for testing rate limit works - generates 429 
