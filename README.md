@@ -1,5 +1,5 @@
 # poptape-authy
-![All unit tests pass](https://github.com/cliveyg/poptape-authy/actions/workflows/unit-test.yml/badge.svg) ![Successfully deployed](https://github.com/cliveyg/poptape-authy/actions/workflows/post-merge-deployment.yml/badge.svg) ![Tests passed](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-junit-tests.json&label=Tests) ![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-cobertura-coverage.json&label=Test%20Coverage)
+![All unit tests pass](https://github.com/cliveyg/poptape-authy/actions/workflows/unit-test.yml/badge.svg) ![Successfully deployed](https://github.com/cliveyg/poptape-authy/actions/workflows/post-merge-deployment.yml/badge.svg) ![Tests passed](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-junit-tests.json&label=Tests) ![Test coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/cliveyg/01d4e7e6c85224fa06e86e36359f93af/raw/a7f676fac92634c3ac4c0d33a5863ebf50a8cc92/poptape-authy-cobertura-coverage.json&label=Test%20Coverage) ![release](https://img.shields.io/github/v/release/cliveyg/poptape-authy)
 
 
 A Python Flask based microservice to authenticate and authorize. Uses Postgres as the database. This is a Json based REST API that provides authentication and authorization via JWT. All endpoints that require authorization to use must have a JWT token in the HTTP header 'x-access-token'. I'm probably going to change this for production as the microservices will sit behind an API server and the system will use public/private keys for encoding the JWT and won't need to call authorization on every call. This will reduce network traffic a lot.
@@ -180,11 +180,7 @@ Example output:
 
 
 ### Notes:
-* Creating a user currently fails the AWS part as the AWS microservice isn't 
-finished and dockerized. When the dev version of poptape-aws is running a user
-is created without errors. As is, the user is created in the auth DB but the 
-authy microservice still returns a 500 - as it's coded to do. Maybe change the 
-return code to something else rather than 500?
+None
 
 ### Tests:
 Tests can be run from app root (/path/to/authy) using: `pytest --cov-config=app/tests/.coveragerc --cov=app app/tests`
@@ -196,8 +192,8 @@ This app can now be run in Docker using the included docker-compose.yml and Dock
 ### TODO:
 * Complete this documentation!
 * ~~Add call to AWS microservice to create AWS user details.~~
-* Make test coverage more comprehensive.
-* Refactor tests to mock AWS microservice call.
+* ~~Make test coverage more comprehensive.~~
+* ~~Refactor tests to mock AWS microservice call.~~
 * Add auditing with calls to Rabbit MQ
 * Make code pep8 compliant even though imo pep8 code is uglier and harder to read ;-)
 * Automate docker database creation and population.
