@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: poptape/authy/api:v0.3
+    image: poptape/authy/api:v0.4
     ports:
       - "1234:8001"
     restart: always
