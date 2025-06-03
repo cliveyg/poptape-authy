@@ -52,7 +52,7 @@ def token_required(f):
             if scheme == 'HTTPS' or scheme == 'https':
                 secure = True
 
-        if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
+        if app.config['ENVIRONMENT'] == 'PROD' and not secure:
             return jsonify({'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
 
         if 'x-access-token' in request.headers:
@@ -167,7 +167,7 @@ def login_user():
         if scheme == 'HTTPS' or scheme == 'https':
             secure = True
 
-    if app.config['ENVIRONMENT'] == 'PRODUCTION' and not secure:
+    if app.config['ENVIRONMENT'] == 'PROD' and not secure:
         return jsonify({'message': 'La la la, I\'m not listening. All requests must be over https not http.'}), 400
     
     try:
@@ -417,9 +417,9 @@ def create_user():
         passfail = True
 
     # return if password is too weak
-    if ((app.config['ENVIRONMENT'] == 'PRODUCTION' and results.get('score') < 3) or
+    if ((app.config['ENVIRONMENT'] == 'PROD' and results.get('score') < 3) or
         (app.config['ENVIRONMENT'] == 'TEST' and results.get('score') < 3) or
-        (app.config['ENVIRONMENT'] == 'DEVELOPMENT' and passfail)):
+        (app.config['ENVIRONMENT'] == 'DEV' and passfail)):
 
         new_dict = {}
         new_dict['message'] = "Sorry your password is too weak, please try another"
