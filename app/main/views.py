@@ -174,7 +174,7 @@ def login_user():
         assert_valid_schema(login_data, 'login')
     except JsonValidationError as error:
         app.logger.debug("The error is [%s]", str(error))
-        return jsonify({'message': 'Check ya inputs mate'}), 400
+        return jsonify({'message': 'Check ya inputs mate', 'error': error.message}), 400
 
     #TODO: refactor this - could do a lot of checks in the model query
     try:
