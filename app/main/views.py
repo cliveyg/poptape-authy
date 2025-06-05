@@ -401,7 +401,7 @@ def create_user():
 
         return jsonify({'message': 'Check ya inputs mate.', 'error': mess }), 400
 
-    # want to restrict certain usernames - get list from env
+    # want to restrict certain usernames - get list from env
     if data['username'].lower() in app.config['RESTRICTED_USERNAMES']:
         error_message = 'Your username and/or email is already registered with us'
         return jsonify({'message': 'Oopsy, something went wrong.' , 'error': error_message }), 409
@@ -474,9 +474,10 @@ def create_user():
 
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
+                         'username': data['username'],
                          'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) },
-                         app.config['SECRET_KEY'],
-                         algorithm='HS512')
+                          app.config['SECRET_KEY'],
+                          algorithm='HS512')
 
     if call_aws(token, new_user.public_id):
         return jsonify({'message': 'Success! User ['+data['username']+'] created.',
@@ -587,7 +588,7 @@ def get_user_roles(current_user,public_id):
 
 
 #-----------------------------------------------------------------------------#
-# role routes
+# role routes
 #-----------------------------------------------------------------------------#
 
 @bp.route('/authy/role', methods=['GET'])
