@@ -3,10 +3,10 @@
   "title": "User Post schema",
   "type": "object",
   "properties": {
-        "email": {"type": "string", "minLength": 5, "maxLength": 100,
+    "email": {"type": "string", "minLength": 5, "maxLength": 100,
           "pattern": "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"},
-        "username": {"type": "string", "minLength": 3, "maxLength": 50},
-        "password": {"type": "string", "minLength": 8, "maxLength": 200},
+    "username": {"type": "string", "minLength": 3, "maxLength": 50},
+    "password": {"type": "string", "minLength": 8, "maxLength": 200},
 	"confirm_password": {"type": "string", "minLength": 8, "maxLength": 200},
 	"passfail": {"type": "integer", "minimum": 0, "maximum": 1}
   },

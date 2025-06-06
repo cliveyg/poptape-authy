@@ -173,6 +173,8 @@ def login_user():
     try:
         assert_valid_schema(login_data, 'login')
     except JsonValidationError as error:
+        #TODO: WARNING - possibility of data leakage if error from
+        # validation is passed on.
         app.logger.debug("The error is [%s]", str(error))
         return jsonify({'message': 'Check ya inputs mate'}), 400
 
@@ -398,8 +400,8 @@ def create_user():
         mess = err.message
         if "does not match '[A-Z" in mess:
             mess = "Email address is not valid"
-
-        return jsonify({'message': 'Check ya inputs mate.', 'error': mess }), 400
+            return jsonify({'message': 'Check ya inputs mate.', 'error': mess }), 400
+        return jsonify({'message': 'Check ya inputs mate', 'error': 'There was a problem with the username or password'}), 400
 
     # want to restrict certain usernames - get list from env
     if data['username'].lower() in app.config['RESTRICTED_USERNAMES']:
