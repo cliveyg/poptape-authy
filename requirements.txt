@@ -27,7 +27,7 @@ mock
 more-itertools
 packaging
 pluggy
-psycopg2
+psycopg2-binary
 py
 pycparser
 PyJWT
