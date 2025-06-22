@@ -27,12 +27,13 @@ services:
     ports:
       - "1235:5432"
     volumes:
-      - poptape_authdata:/var/lib/postgresql/data
+      - poptape_auth_data:/var/lib/postgresql/data
     networks:
       - poptape
 networks:
   poptape:
     external: true
 volumes:
-  poptape_authdata:
+  poptape_auth_data:
+    name: poptape_auth_data
   
