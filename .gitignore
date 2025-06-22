@@ -13,6 +13,8 @@
 app/tests/load_live_db.py
 app/*.pyc
 /*.pyc
+*/.DS_Store
+.DS_Store
 # Un-ignore these files - it's bit of a clonky way to do it but it's more secure
 !app/
 !db_schema/
