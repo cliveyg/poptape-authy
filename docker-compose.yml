@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - "PORT=${PORT}"
-    image: poptape/authy/api:v0.4
+    image: poptape/authy/api:v${VERSION}
     ports:
       - "1234:${PORT}"
     restart: always
