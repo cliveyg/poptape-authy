@@ -48,3 +48,4 @@ app/*.pyc
 !.github/workflows/codeql.yml
 !.github/workflows/unit-test.yml
 !.github/workflows/post-merge-deployment.yml
+!run_app.sh
