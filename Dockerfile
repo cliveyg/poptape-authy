@@ -11,7 +11,7 @@ RUN rm -rf vauthy && \
     rm -rf app/tests && \
     mkdir -p /authy/log \
 
-RUN apt-get clean && apt-get update && apt-get install -y curl bash
+RUN apt-get clean && apt-get update && apt-get install -y curl
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
