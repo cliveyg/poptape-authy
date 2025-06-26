@@ -3,9 +3,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      - "PORT=${PORT}"
     image: poptape/authy/api:v0.4
     ports:
-      - "1234:8001"
+      - "1234:${PORT}"
     restart: always
     volumes:
       - ${LOCAL_LOG_LOC}:/authy/log
