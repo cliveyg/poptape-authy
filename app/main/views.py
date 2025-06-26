@@ -14,9 +14,7 @@ import uuid
 import jwt
 import datetime
 import time
-# import pprint
-# import json
-# import logging
+import os
 
 from urllib.parse import unquote
 from sqlalchemy.exc import SQLAlchemyError, DBAPIError
@@ -794,7 +792,7 @@ def sitemap():
 @bp.route('/authy/status', methods=['GET'])
 def system_running():
 
-    return jsonify({'message': 'System running...' })
+    return jsonify({'message': 'System running...', 'version': os.getenv('VERSION')})
     # return make_response({'message': 'System running...'}, 200, {'Access-Control-Allow-Origin': '*'})
 
 # -----------------------------------------------------------------------------

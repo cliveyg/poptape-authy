@@ -5,25 +5,19 @@ COPY . /authy
 WORKDIR /authy
 
 # remove unwanted files and folders
-RUN rm -rf vauthy
-RUN rm -rf migrations
-RUN rm -rf app/tests
-RUN mkdir -p /authy/log
+RUN rm -rf vauthy && \
+    rm -rf migrations && \
+    rm -rf app/tests && \
+    mkdir -p /authy/log \
+
+RUN apt-get clean && apt-get update && apt-get install -y curl
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Make port 8001 available to the world outside this container
-EXPOSE 8001
-
-# Define environment variables here
-# args are passed it from cli or docker-compose.yml
-ARG poptape_auth_user
-ARG poptape_auth_pass
-ENV NAME cliveyg
-ENV POPTAPE_AUTH_USER {$poptape_auth_user}
-ENV POPTAPE_AUTH_PASS {$poptape_auth_pass}
+EXPOSE $PORT
 
 # if -u flag in CMD below doesn't work 
 # then uncomment this to see python
@@ -31,4 +25,5 @@ ENV POPTAPE_AUTH_PASS {$poptape_auth_pass}
 ENV PYTHONUNBUFFERED=0
 
 # Run gunicorn when the container launches
+# we can't pass in the port env to docker CMD :(
 CMD ["gunicorn", "-b", "0.0.0.0:8001", "authy:app"]
