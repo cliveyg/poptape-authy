@@ -197,6 +197,18 @@ class MyTest(FlaskTestCase):
 
     # -----------------------------------------------------------------------------
 
+    def test_login_fails_password_not_base64_encoded(self):
+        added_users = addNormalUsers()
+        self.assertEqual(len(added_users), 8)
+        headers = { 'Content-type': 'application/json' }
+        no_b64_encoding = '{ "username": "clivey", "password": "password" }'
+        response = self.client.post('/authy/login',
+                                    json=no_b64_encoding,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 400)
+
+    # -----------------------------------------------------------------------------
+
     def test_login_fails_bad_json(self):
         added_users = addNormalUsers()
         self.assertEqual(len(added_users), 8)
@@ -561,6 +573,23 @@ class MyTest(FlaskTestCase):
                                     json=create_user,
                                     headers=headers)
         self.assertEqual(response.status_code, 401)
+
+    # -----------------------------------------------------------------------------
+
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
+    def test_create_user_fail_base64_encoding(self, mock_post):
+
+        users = addNormalUsers()
+        self.assertEqual(len(users), 8)
+        headers = { 'Content-type': 'application/json' }
+        create_user = {'username': 'admin',
+                       'password': 'ui642i46b24',
+                       'confirm_password': 'ui642i46b24',
+                       'email': 'user1@email.com'}
+        response = self.client.post('/authy/user',
+                                    json=create_user,
+                                    headers=headers)
+        self.assertEqual(response.status_code, 400)
 
     # -----------------------------------------------------------------------------
 
