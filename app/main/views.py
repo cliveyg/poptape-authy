@@ -415,16 +415,17 @@ def create_user():
     if data['password'] != data['confirm_password']:
         return jsonify({'message': 'Passwords don\'t match'}), 400
 
+    b64_decoded_pass = None
     try:
-        b64_decoded_pass = base64.b64decode(data['password'])
+        b64_decoded_pass = base64.b64decode(data['password']).decode("utf-8")
     except Exception as error:
         app.logger.debug("Base64 decode error [%s]", error)
         return jsonify({'message': 'Unable to decode base64'}), 400
 
-    pw = b64_decoded_pass.decode("utf-8")
+    # pw = b64_decoded_pass.decode("utf-8")
 
     # password strength checking - not sure what value to accept
-    results = zxcvbn(pw, user_inputs=[data['email'], data['username']])
+    results = zxcvbn(b64_decoded_pass, user_inputs=[data['email'], data['username']])
 
     passfail = False
     if 'passfail' in data:
@@ -444,7 +445,7 @@ def create_user():
 
     validation_string = str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())
 
-    hashed_password = generate_password_hash(pw, method='pbkdf2:sha512')
+    hashed_password = generate_password_hash(b64_decoded_pass, method='pbkdf2:sha512')
     ts = time.time()
     datetime_string = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
