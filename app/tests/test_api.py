@@ -11,6 +11,7 @@ from .fixtures import login_body, make_datetime_string, headers_with_token_and_h
 from flask_testing import TestCase as FlaskTestCase
 
 import uuid
+import base64
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # this method will be used by the mock to replace requests.get
@@ -151,7 +152,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="sally",
-                                                    passwd="pAssword"),
+                                                    passwd='pAssword'),
                                     headers=headers)
         self.assertEqual(response.status_code, 401)
 
@@ -163,7 +164,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="ronald",
-                                                    passwd="password"),
+                                                    passwd='password'),
                                     headers=headers)
         self.assertEqual(response.status_code, 401)
 
@@ -189,7 +190,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="分支持",
-                                                    passwd="password"),
+                                                    passwd="分支持"),
                                     headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.json)
@@ -531,9 +532,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_decoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = {'username': 'user1',
-                       'password': 'hgfkwyg322dd',
-                       'confirm_password': 'hgfkwyg322dd',
+                       'password': b64_decoded_pass,
+                       'confirm_password': b64_decoded_pass,
                        'email': 'user1@email.com'}
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -549,9 +551,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('password', 'utf-8')).decode("utf-8")
         create_user = {'username': 'userX',
-                       'password': 'password',
-                       'confirm_password': 'password',
+                       'password': b64_encoded_pass,
+                       'confirm_password': b64_encoded_pass,
                        'passfail': 1,
                        'email': 'userX@email.com'}
         response = self.client.post('/authy/user',
@@ -567,9 +570,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = {'username': 'admin',
-                       'password': 'hgfkwyg322dd',
-                       'confirm_password': 'hgfkwyg322dd',
+                       'password': b64_encoded_pass,
+                       'confirm_password': b64_encoded_pass,
                        'email': 'user1@email.com'}
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -597,9 +601,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = {'username': 'user1',
-                       'password': 'hgfkwyg322dd',
-                       'confirm_password': 'hgfkwyg322dd',
+                       'password': b64_encoded_pass,
+                       'confirm_password': b64_encoded_pass,
                        'blah': 'yarp',
                        'email': 'user1@email.com'}
         response = self.client.post('/authy/user',
@@ -613,9 +618,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('password', 'utf-8')).decode("utf-8")
         create_user = { 'username': 'user1',
-                        'password': 'password',
-                        'confirm_password': 'password',
+                        'password': b64_encoded_pass,
+                        'confirm_password': b64_encoded_pass,
                         'email': 'user1@email.com' }
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -631,9 +637,11 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass1 = base64.b64encode(bytes('password', 'utf-8')).decode("utf-8")
+        b64_encoded_pass2 = base64.b64encode(bytes('passord', 'utf-8')).decode("utf-8")
         create_user = { 'username': 'user1',
-                        'password': 'hdqi73dhksdd',
-                        'confirm_password': 'hdqi73dhksd',
+                        'password': b64_encoded_pass1,
+                        'confirm_password': b64_encoded_pass2,
                         'email': 'user1@email.com' }
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -649,9 +657,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = { 'username': 'user1',
-                        'password': 'hgfkwyg322dd',
-                        'confirm_password': 'hgfkwyg322dd',
+                        'password': b64_encoded_pass,
+                        'confirm_password': b64_encoded_pass,
                         'email': 'user1@email' }
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -667,9 +676,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = { 'username': 'woody',
-                        'password': 'hgfkwyg322dd',
-                        'confirm_password': 'hgfkwyg322dd',
+                        'password': b64_encoded_pass,
+                        'confirm_password': b64_encoded_pass,
                         'email': 'woody12@email.com' }
         response = self.client.post('/authy/user',
                                     json=create_user,
@@ -686,9 +696,10 @@ class MyTest(FlaskTestCase):
         users = addNormalUsers()
         self.assertEqual(len(users), 8)
         headers = { 'Content-type': 'application/json' }
+        b64_encoded_pass = base64.b64encode(bytes('hgfkwyg322dd', 'utf-8')).decode("utf-8")
         create_user = { 'username': 'woodyh',
-                        'password': 'hgfkwyg322dd',
-                        'confirm_password': 'hgfkwyg322dd',
+                        'password': b64_encoded_pass,
+                        'confirm_password': b64_encoded_pass,
                         'email': 'woody@email.com' }
         response = self.client.post('/authy/user',
                                     json=create_user,
