@@ -11,6 +11,7 @@ from .fixtures import login_body, make_datetime_string, headers_with_token_and_h
 from flask_testing import TestCase as FlaskTestCase
 
 import uuid
+import base64
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # this method will be used by the mock to replace requests.get
@@ -151,7 +152,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="sally",
-                                                    passwd="pAssword"),
+                                                    passwd='pAssword'),
                                     headers=headers)
         self.assertEqual(response.status_code, 401)
 
@@ -163,7 +164,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="ronald",
-                                                    passwd="password"),
+                                                    passwd='password'),
                                     headers=headers)
         self.assertEqual(response.status_code, 401)
 
@@ -189,7 +190,7 @@ class MyTest(FlaskTestCase):
         headers = { 'Content-type': 'application/json' }
         response = self.client.post('/authy/login',
                                     json=login_body(name="分支持",
-                                                    passwd="password"),
+                                                    passwd="分支持"),
                                     headers=headers)
         self.assertEqual(response.status_code, 200)
         self.assertIn('token', response.json)

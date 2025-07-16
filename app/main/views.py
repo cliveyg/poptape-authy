@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # from cryptography.fernet import Fernet
 from functools import wraps
 
+import base64
 import uuid
 import jwt
 import datetime
@@ -187,8 +188,13 @@ def login_user():
         return jsonify({'message': 'Could not verify this user'}), 401
 
     # user exists so check password
+    try:
+        b64_decoded_pass = base64.b64decode(login_data.get('password'))
+    except Exception as error:
+        app.logger.debug("Base64 decode error [%s]", error)
+        return jsonify({'message': 'Unable to decode base64'}), 400
     
-    if check_password_hash(user.password, login_data.get('password')):
+    if check_password_hash(user.password, b64_decoded_pass.decode("utf-8")):
         #username = user.username.encode().decode("utf-8")
         token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) }, 
                            app.config['SECRET_KEY'],
@@ -409,8 +415,16 @@ def create_user():
     if data['password'] != data['confirm_password']:
         return jsonify({'message': 'Passwords don\'t match'}), 400
 
+    try:
+        b64_decoded_pass = base64.b64decode(data['password'])
+    except Exception as error:
+        app.logger.debug("Base64 decode error [%s]", error)
+        return jsonify({'message': 'Unable to decode base64'}), 400
+
+    pw = b64_decoded_pass.decode("utf-8")
+
     # password strength checking - not sure what value to accept
-    results = zxcvbn(data['password'], user_inputs=[data['email'], data['username']])
+    results = zxcvbn(pw, user_inputs=[data['email'], data['username']])
 
     passfail = False
     if 'passfail' in data:
@@ -428,8 +442,9 @@ def create_user():
         new_dict['score'] = results['score']
         return jsonify(new_dict), 401
 
-    validation_string = str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4()) 
-    hashed_password = generate_password_hash(data['password'], method='pbkdf2:sha512')
+    validation_string = str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())+str(uuid.uuid4())
+
+    hashed_password = generate_password_hash(pw, method='pbkdf2:sha512')
     ts = time.time()
     datetime_string = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 

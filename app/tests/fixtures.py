@@ -6,6 +6,7 @@ import uuid
 import os.path
 import datetime
 import time
+import base64
 from requests.auth import _basic_auth_str
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -22,9 +23,11 @@ def make_datetime_string():
 def login_body(**kwargs):
 
     if "name" and "passwd" in kwargs:
-        return { 'username': kwargs['name'], 'password': kwargs['passwd'] }
+        pw = base64.b64encode(bytes(kwargs['passwd'], 'utf-8'))
+        return { 'username': kwargs['name'], 'password': pw}
 
-    return { 'username': 'woody', 'password': 'password' }
+    pw = base64.b64encode(bytes('password', 'utf-8'))
+    return { 'username': 'woody', 'password': pw }
 
 # -----------------------------------------------------------------------------
 
@@ -129,7 +132,7 @@ def addNormalUsers():
 
     user8 = User(public_id = str(uuid.uuid4()),
                  username = '分支持',
-                 password = generate_password_hash('password'),
+                 password = generate_password_hash('分支持'),
                  created  = make_datetime_string(),
                  last_login = make_datetime_string(),
                  validated = True,
