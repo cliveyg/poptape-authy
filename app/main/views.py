@@ -196,7 +196,7 @@ def login_user():
     
     if check_password_hash(user.password, b64_decoded_pass.decode("utf-8")):
         #username = user.username.encode().decode("utf-8")
-        token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) }, 
+        token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=240) },
                            app.config['SECRET_KEY'],
                            algorithm='HS512')
 
@@ -204,7 +204,7 @@ def login_user():
         #app.logger.debug(token)
 
         # update last_login field
-        user.last_login = datetime.datetime.utcnow()
+        user.last_login = datetime.datetime.now(datetime.UTC)
         try:
             db.session.commit()
             # return the token to client
@@ -491,7 +491,7 @@ def create_user():
     # create a jwt for new user to return to client
     token = jwt.encode({ 'public_id': new_user.public_id,
                          'username': data['username'],
-                         'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=240) },
+                         'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=240) },
                           app.config['SECRET_KEY'],
                           algorithm='HS512')
 
