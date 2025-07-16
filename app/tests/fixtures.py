@@ -23,10 +23,12 @@ def make_datetime_string():
 def login_body(**kwargs):
 
     if "name" and "passwd" in kwargs:
-        pw = base64.b64encode(bytes(kwargs['passwd'], 'utf-8'))
+        b64_decoded_pass = base64.b64encode(bytes(kwargs['passwd'], 'utf-8'))
+        pw = b64_decoded_pass.decode("utf-8")
         return { 'username': kwargs['name'], 'password': pw}
 
-    pw = base64.b64encode(bytes('password', 'utf-8'))
+    b64_decoded_pass = base64.b64encode(bytes('password', 'utf-8'))
+    pw = b64_decoded_pass.decode("utf-8")
     return { 'username': 'woody', 'password': pw }
 
 # -----------------------------------------------------------------------------
