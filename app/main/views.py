@@ -196,7 +196,11 @@ def login_user():
     
     if check_password_hash(user.password, b64_decoded_pass.decode("utf-8")):
         #username = user.username.encode().decode("utf-8")
-        token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=240) },
+        if app.config['ENVIRONMENT'] == 'DEV':
+            expiry_time = datetime.timedelta(hours=24)
+        else:
+            expiry_time = datetime.timedelta(hours=4)
+        token = jwt.encode({ 'public_id': user.public_id, 'username': user.username, 'exp': datetime.datetime.now(datetime.UTC) + expiry_time },
                            app.config['SECRET_KEY'],
                            algorithm='HS512')
 
@@ -489,9 +493,13 @@ def create_user():
         return jsonify({'message': 'Oopsy, something went bang.'}), 500 # pragma: no cover
 
     # create a jwt for new user to return to client
+    if app.config['ENVIRONMENT'] == 'DEV':
+        expiry_time = datetime.timedelta(hours=24)
+    else:
+        expiry_time = datetime.timedelta(hours=4)
     token = jwt.encode({ 'public_id': new_user.public_id,
                          'username': data['username'],
-                         'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=240) },
+                         'exp': datetime.datetime.now(datetime.UTC) + expiry_time },
                           app.config['SECRET_KEY'],
                           algorithm='HS512')
 
