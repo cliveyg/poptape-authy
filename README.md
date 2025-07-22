@@ -6,7 +6,7 @@ A Python Flask based microservice to authenticate and authorize. Uses Postgres a
 
 This is a heavily refactored version of my earlier login microservice. It has been changed to a application factory to enable easier unit tesing amongst other advantages.
 
-Please see [this gist](https://gist.github.com/cliveyg/cf77c295e18156ba74cda46949231d69) to see how this microservcie works as part of the auction system software.
+Please see [this gist](https://gist.github.com/cliveyg/cf77c295e18156ba74cda46949231d69) to see how this microservice works as part of the auction system software.
 
 ### API routes
 
