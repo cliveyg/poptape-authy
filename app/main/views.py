@@ -41,6 +41,7 @@ def only_json():
 #-----------------------------------------------------------------------------#
 
 def token_required(f):
+
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
@@ -70,7 +71,10 @@ def token_required(f):
                      .filter(User.public_id == data['public_id'])\
                      .filter(User.validated == True)\
                      .order_by(Role.level).all()
-            current_user = result[0]
+            if len(result) > 0:
+                current_user = result[0]
+            else:
+                current_user = False
 
         except (SQLAlchemyError, jwt.InvalidTokenError, DBAPIError) as e:
             return jsonify({'message': 'Invalid token.'}), 401
@@ -93,6 +97,7 @@ def token_required(f):
 #-----------------------------------------------------------------------------#
 
 def require_access_level(access_level):
+
     def actual_decorator(f):
         @wraps(f)
         def decorated(current_user, *args, **kwargs):
@@ -113,8 +118,6 @@ def require_access_level(access_level):
 @token_required
 @require_access_level(10)
 def check_access_level(current_user, external_level):
-
-    #app.logger.info("Checking access level")
 
     url_string = app.config['BASE_URLS']
     good_urls = url_string.split(",")
@@ -195,7 +198,6 @@ def login_user():
         return jsonify({'message': 'Unable to decode base64'}), 400
     
     if check_password_hash(user.password, b64_decoded_pass.decode("utf-8")):
-        #username = user.username.encode().decode("utf-8")
         if app.config['ENVIRONMENT'] == 'DEV':
             expiry_time = datetime.timedelta(hours=24)
         else:
@@ -204,7 +206,7 @@ def login_user():
                            app.config['SECRET_KEY'],
                            algorithm='HS512')
 
-        app.logger.debug("Created JWT")
+        #app.logger.debug("Created JWT")
         #app.logger.debug(token)
 
         # update last_login field
@@ -217,7 +219,7 @@ def login_user():
         except Exception as error: # pragma: no cover
             app.logger.debug(error)
             db.session.rollback() # pragma: no cover
-            return jsonify({'message': 'Oopsy something went wrong, try again'}), 500 # pragma: no cover
+            return jsonify({'message': 'Oopsy, something went wrong, try again'}), 500 # pragma: no cover
 
     return jsonify({'message': 'Could not verify user identity'}), 401
 
